@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.schemas.user import UserCreateS, UserBaseS
 from app.core.dependencies import UserServiceDep
+from app.schemas.user import UserBaseS, UserCreateS
 
 router = APIRouter(
     prefix="/users",

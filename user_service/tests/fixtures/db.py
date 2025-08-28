@@ -1,12 +1,9 @@
 from typing import AsyncIterable
-import asyncpg
+
 import pytest_asyncio
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.models.base import BaseOrm
-from app.service import UserService
-from app.repository import UserRepository
-
 
 db_url = "postgresql+asyncpg://postgres:postgres@localhost:5433/test_db"
 
@@ -35,11 +32,3 @@ async def db_session(engine) -> AsyncIterable[AsyncSession]:
     )
     async with async_session() as session:
         yield session
-
-
-@pytest_asyncio.fixture(scope="function")
-async def user_service(db_session: AsyncSession) -> UserService:
-
-    repo = UserRepository(db_session)
-    service = UserService(repo)
-    return service

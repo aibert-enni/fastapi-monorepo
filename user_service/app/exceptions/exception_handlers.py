@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from .custom_exceptions import DatabaseError, APIError
+
+from .custom_exceptions import APIError, DatabaseError
 
 
 def setup_exception_handlers(app: FastAPI) -> None:
@@ -16,7 +17,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
         )
 
     @app.exception_handler(APIError)
-    async def database_exception_handler(request: Request, exc: DatabaseError):
+    async def api_exception_handler(request: Request, exc: APIError):
         return JSONResponse(
             status_code=exc.status_code,
             content={

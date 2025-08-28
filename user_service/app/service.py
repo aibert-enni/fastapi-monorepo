@@ -1,9 +1,9 @@
 from sqlalchemy.exc import IntegrityError as SAIntegrityError
 
-from app.repository import UserRepository
-from app.schemas.user import UserS, UserCreateS
-from app.utils.user import hash_password
 from app.exceptions.custom_exceptions import IntegrityError
+from app.repository import UserRepository
+from app.schemas.user import UserCreateS, UserS
+from app.utils.user import hash_password
 
 
 class UserService:

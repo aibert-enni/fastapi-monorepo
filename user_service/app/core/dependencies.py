@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends
+
 from app.core.db import SessionDep
 from app.repository import UserRepository
 from app.service import UserService

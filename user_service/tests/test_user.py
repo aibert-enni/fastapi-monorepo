@@ -1,11 +1,9 @@
-from pydantic import ValidationError
 import pytest
+from pydantic import ValidationError
 
-from fixtures.db import engine, db_session, user_service
-
+from app.exceptions.custom_exceptions import IntegrityError
 from app.schemas.user import UserCreateS
 from app.service import UserService
-from app.exceptions.custom_exceptions import IntegrityError
 
 
 @pytest.mark.asyncio

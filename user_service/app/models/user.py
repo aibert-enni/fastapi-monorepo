@@ -1,8 +1,8 @@
-from sqlalchemy import String, Boolean
+from sqlalchemy import Boolean, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import BaseOrm
-from app.models.mixins import UuidPkMixin, CreateAtMixin, UpdateAtMixin
+from app.models.mixins import CreateAtMixin, UpdateAtMixin, UuidPkMixin
 
 
 class UserOrm(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):

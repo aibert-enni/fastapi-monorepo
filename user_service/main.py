@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from app.exceptions.exception_handlers import setup_exception_handlers
+
 from app.api.router import router as user_router
+from app.exceptions.exception_handlers import setup_exception_handlers
 
 app = FastAPI(root_path="/api/v1")
 
