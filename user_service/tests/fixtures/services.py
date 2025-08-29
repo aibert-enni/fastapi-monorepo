@@ -1,8 +1,8 @@
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
+from user_service.app.services.user_service import UserService
 
 from app.repository import UserRepository
-from app.service import UserService
 
 
 @pytest_asyncio.fixture(scope="function")

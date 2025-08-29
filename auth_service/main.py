@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    root_path="/api", title="User Service", version="0.0.1", lifespan=lifespan
+    root_path="/api", title="Auth Service", version="0.0.1", lifespan=lifespan
 )
 
 setup_exception_handlers(app)

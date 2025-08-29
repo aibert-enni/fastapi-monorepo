@@ -4,7 +4,7 @@ from fastapi import Depends
 
 from app.core.db import SessionDep
 from app.repository import UserRepository
-from app.service import UserService
+from app.services.user_service import UserService
 
 
 def get_user_repository(db: SessionDep) -> UserRepository:

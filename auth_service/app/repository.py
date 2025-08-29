@@ -1,15 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.user import UserOrm
-from app.schemas.user import UserBaseS
+from app.models.auth import AuthOrm
+from app.schemas.auth import AuthS
 
 
-class UserRepository:
+class AuthRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def save(self, user: UserBaseS) -> UserOrm:
-        db_user = UserOrm(**user.model_dump())
+    async def save(self, user: AuthS):
+        db_user = AuthOrm(**user.model_dump())
         self.session.add(db_user)
         await self.session.commit()
         await self.session.refresh(db_user)

@@ -2,8 +2,8 @@ from sqlalchemy.exc import IntegrityError as SAIntegrityError
 
 from app.exceptions.custom_exceptions import IntegrityError
 from app.repository import UserRepository
-from app.schemas.user import UserCreateS, UserS
-from app.utils.user import hash_password
+from app.schemas.user import UserBaseS, UserCreateS, UserS
+from app.services.rabbit.publishers import publish_user_created
 
 
 class UserService:
@@ -11,9 +11,8 @@ class UserService:
         self.user_repository = user_repository
 
     async def create_user(self, schema: UserCreateS) -> UserS:
-        hashed_password = hash_password(schema.password)
-        user_schema = UserS(
-            **schema.model_dump(exclude={"password"}), hashed_password=hashed_password
+        user_schema = UserBaseS(
+            username=schema.username, fullname=schema.fullname, email=schema.email
         )
         try:
             db_user = await self.user_repository.save(user_schema)
@@ -30,4 +29,8 @@ class UserService:
             else:
                 raise IntegrityError("Unique constraint violation")
 
-        return UserS.model_validate(db_user)
+        user = UserS(**schema.model_dump(), id=db_user.id)
+
+        await publish_user_created(user)
+
+        return user

@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.models.base import BaseOrm
 
-db_url = "postgresql+asyncpg://postgres:postgres@localhost:5434/test_db"
+db_url = "postgresql+asyncpg://postgres:postgres@localhost:5435/test_db"
 
 
 @pytest_asyncio.fixture(scope="function")
