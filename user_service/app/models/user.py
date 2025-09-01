@@ -8,13 +8,8 @@ from app.models.mixins import CreateAtMixin, UpdateAtMixin, UuidPkMixin
 class UserOrm(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):
     __tablename__ = "users"
 
-    username: Mapped[str] = mapped_column(
-        String(64), unique=True, index=True, nullable=False
-    )
-    fullname: Mapped[str] = mapped_column(String(64), nullable=False)
-    email: Mapped[str] = mapped_column(
-        String(64), unique=True, index=True, nullable=False
-    )
+    first_name: Mapped[str] = mapped_column(String(64), nullable=True)
+    last_name: Mapped[str] = mapped_column(String(64), nullable=True)
 
     def __repr__(self):
-        return f"<User(username={self.username}, email={self.email}, fullname={self.fullname})>"
+        return f"<User(firstname={self.first_name}, lastname={self.last_name})>"

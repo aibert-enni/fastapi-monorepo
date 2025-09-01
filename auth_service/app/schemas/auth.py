@@ -1,21 +1,31 @@
-from typing import Optional
-from uuid import UUID
+from pydantic import BaseModel, ConfigDict, EmailStr
 
-from pydantic import BaseModel, ConfigDict
+from .base import UUIDMixinS
 
 
 class AuthBaseS(BaseModel):
-    user_id: UUID
-    is_active: bool = False
-    is_superuser: bool = False
+    username: str
+    email: EmailStr
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class AuthCreateS(AuthBaseS):
+class AuthPermissionMixinS(BaseModel):
+    is_active: bool = False
+    is_superuser: bool = False
+
+
+class AuthRegisterS(AuthBaseS):
     password: str
 
 
-class AuthS(AuthBaseS):
-    id: Optional[UUID] = None
+class AuthCreateS(AuthBaseS, AuthPermissionMixinS):
+    password: str
+
+
+class AuthRegisterResponseS(AuthBaseS, UUIDMixinS):
+    pass
+
+
+class AuthS(AuthBaseS, AuthPermissionMixinS, UUIDMixinS):
     hashed_password: str

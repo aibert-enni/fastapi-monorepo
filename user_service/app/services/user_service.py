@@ -1,9 +1,8 @@
 from sqlalchemy.exc import IntegrityError as SAIntegrityError
 
-from app.exceptions.custom_exceptions import IntegrityError
+from app.exceptions.custom_exceptions import IntegrityError, NotFoundError
 from app.repository import UserRepository
-from app.schemas.user import UserBaseS, UserCreateS, UserS
-from app.services.rabbit.publishers import publish_user_created
+from app.schemas.user import UserCreateS, UserS, UserUpdateS
 
 
 class UserService:
@@ -11,26 +10,23 @@ class UserService:
         self.user_repository = user_repository
 
     async def create_user(self, schema: UserCreateS) -> UserS:
-        user_schema = UserBaseS(
-            username=schema.username, fullname=schema.fullname, email=schema.email
-        )
+        user_schema = UserS(**schema.model_dump())
         try:
-            db_user = await self.user_repository.save(user_schema)
+            user = await self.user_repository.save(user_schema)
         except SAIntegrityError as e:
             detail = str(e.orig)
-            if "username" in detail:
+            if "id" in detail:
                 raise IntegrityError(
-                    "User with this username already exist",
-                )
-            elif "email" in detail:
-                raise IntegrityError(
-                    "User with this email already exist",
+                    "User with this id already exist",
                 )
             else:
                 raise IntegrityError("Unique constraint violation")
 
-        user = UserS(**schema.model_dump(), id=db_user.id)
+        return user
 
-        await publish_user_created(user)
-
+    async def update_user(self, schema: UserUpdateS) -> UserS:
+        user_schema = UserS(**schema.model_dump())
+        user = await self.user_repository.update(user_schema)
+        if not user:
+            raise NotFoundError("User not found")
         return user

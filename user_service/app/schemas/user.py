@@ -1,21 +1,23 @@
+from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict
 
 
 class UserBaseS(BaseModel):
-    username: str
-    fullname: str
-    email: EmailStr
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class UserCreateS(UserBaseS):
-    password: str
-    is_active: bool = False
-    is_superuser: bool = False
+    id: Optional[UUID] = None
 
 
-class UserS(UserCreateS):
-    id: UUID
+class UserUpdateS(UserBaseS):
+    pass
+
+
+class UserS(UserBaseS):
+    id: Optional[UUID] = None

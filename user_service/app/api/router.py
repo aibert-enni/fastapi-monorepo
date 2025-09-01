@@ -1,7 +1,9 @@
+from uuid import UUID
+
 from fastapi import APIRouter
 
 from app.core.dependencies import UserServiceDep
-from app.schemas.user import UserCreateS, UserS
+from app.schemas.user import UserBaseS, UserCreateS, UserS
 
 router = APIRouter(
     prefix="/users",
@@ -10,7 +12,8 @@ router = APIRouter(
 )
 
 
-@router.post("/create", response_model=UserS)
-async def create_user(user: UserCreateS, user_service: UserServiceDep):
-    user = await user_service.create_user(user)
+@router.post("/update", response_model=UserS)
+async def update_user(user_id: UUID, schema: UserBaseS, user_service: UserServiceDep):
+    create_schema = UserCreateS(id=user_id, **schema.model_dump())
+    user = await user_service.update_user(create_schema)
     return user

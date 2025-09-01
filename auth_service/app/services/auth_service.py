@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError as SAIntegrityError
 from app.exceptions.custom_exceptions import IntegrityError
 from app.repository import AuthRepository
 from app.schemas.auth import AuthCreateS, AuthS
+from app.services.rabbit.publishers import publish_create_user
 from app.utils.password import hash_password
 
 
@@ -16,7 +17,7 @@ class AuthService:
             **schema.model_dump(exclude={"password"}), hashed_password=hashed_password
         )
         try:
-            db_user = await self.auth_repository.save(user_schema)
+            user = await self.auth_repository.save(user_schema)
         except SAIntegrityError as e:
             detail = str(e.orig)
             if "username" in detail:
@@ -29,5 +30,5 @@ class AuthService:
                 )
             else:
                 raise IntegrityError("Unique constraint violation")
-
-        return AuthS.model_validate(db_user)
+        await publish_create_user(user)
+        return user
