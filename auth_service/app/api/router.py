@@ -1,7 +1,20 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Response
 
-from app.core.dependencies import AuthServiceDep
-from app.schemas.auth import AuthCreateS, AuthRegisterResponseS, AuthRegisterS
+from app.core.dependencies import (
+    AuthServiceDep,
+    GetCurrentUserByRefreshDep,
+    GetCurrentUserDep,
+    get_current_user_by_refresh,
+)
+from app.schemas.auth import (
+    AuthBaseS,
+    AuthCreateS,
+    AuthLoginS,
+    AuthRegisterResponseS,
+    AuthRegisterS,
+)
+from app.schemas.jwt_token import AccessTokenS
+from app.utils.jwt import create_access_token
 
 router = APIRouter(
     prefix="/auth",
@@ -18,3 +31,42 @@ async def register_user(
         **schema.model_dump(), is_active=True, is_superuser=False
     )
     return await auth_service.create_auth(create_schema)
+
+
+@router.post("/login", status_code=200)
+async def login_user(
+    schema: AuthLoginS, response: Response, auth_service: AuthServiceDep
+) -> AccessTokenS:
+    tokens = await auth_service.login_user(schema)
+    response.set_cookie(
+        key="refresh_token",
+        value=tokens.refresh_token,
+        httponly=True,
+        secure=True,
+        samesite="Lax",
+    )
+    return AccessTokenS(access_token=tokens.access_token)
+
+
+@router.post("/refresh", status_code=200)
+async def refresh_access_token(
+    current_user: GetCurrentUserByRefreshDep,
+) -> AccessTokenS:
+    access_token = create_access_token({"sub": current_user.username})
+
+    return AccessTokenS(access_token=access_token)
+
+
+@router.get("/me", status_code=200)
+async def get_user_me(
+    current_user: GetCurrentUserDep,
+) -> AuthBaseS:
+    return current_user
+
+
+@router.post(
+    "/logout", status_code=200, dependencies=[Depends(get_current_user_by_refresh)]
+)
+async def logout_user(response: Response) -> None:
+    response.delete_cookie(key="refresh_token", httponly=True, secure=True)
+    return {"message": "Logget out"}

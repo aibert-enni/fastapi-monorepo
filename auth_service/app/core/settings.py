@@ -14,6 +14,14 @@ class RabbitSettings(BaseModel):
     URL: str
 
 
+class JwtSettings(BaseModel):
+    PRIVATE_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-private.pem"
+    PUBLIC_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-public.pem"
+    ALGORITHM: str = "RS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 1
+
+
 class CommonSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),
@@ -21,6 +29,7 @@ class CommonSettings(BaseSettings):
     )
     db: DBSettings
     rabbit: RabbitSettings
+    jwt: JwtSettings = JwtSettings()
 
 
 settings = CommonSettings()

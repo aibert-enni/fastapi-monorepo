@@ -19,6 +19,11 @@ class AuthRegisterS(AuthBaseS):
     password: str
 
 
+class AuthLoginS(BaseModel):
+    username: str
+    password: str
+
+
 class AuthCreateS(AuthBaseS, AuthPermissionMixinS):
     password: str
 

@@ -4,14 +4,14 @@ from fastapi import FastAPI
 
 from app.api.v1 import router as v1_router
 from app.exceptions.exception_handlers import setup_exception_handlers
-from app.services.rabbit.main import broker
+from app.services.brokers.rabbit.main import rabbit_broker_service
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await broker.start()
+    await rabbit_broker_service.start()
     yield
-    await broker.stop()
+    await rabbit_broker_service.stope()
 
 
 app = FastAPI(
