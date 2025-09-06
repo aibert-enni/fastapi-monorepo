@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.exc import IntegrityError as SAIntegrityError
 
 from app.exceptions.custom_exceptions import (
@@ -58,7 +60,7 @@ class AuthService:
 
     async def login_user(self, schema: AuthLoginS) -> JWT_TokenS:
         user = await self.authenticate_user(schema)
-        jwt_dict = {"sub": user.username}
+        jwt_dict = {"sub": user.id}
         access_token = create_access_token(jwt_dict)
         refresh_token = create_refresh_token(jwt_dict)
         return JWT_TokenS(access_token=access_token, refresh_token=refresh_token)
@@ -67,7 +69,7 @@ class AuthService:
         self,
         payload: dict,
         token_type: TokenType = TokenType.ACCESS,
-    ) -> AuthS:
+    ) -> Optional[AuthS]:
         if payload.get(TOKEN_TYPE_FIELD) != token_type.value:
             raise CredentialError
 
@@ -75,6 +77,6 @@ class AuthService:
         if username is None:
             raise CredentialError
 
-        user = await self.auth_repository.get_by_username(username)
+        user = await self.auth_repository.get_by_id(username)
 
         return user

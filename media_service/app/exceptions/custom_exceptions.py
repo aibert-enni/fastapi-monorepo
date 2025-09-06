@@ -19,7 +19,7 @@ class IntegrityError(DatabaseError):
         message,
         status_code=status.HTTP_400_BAD_REQUEST,
         error="Data Validation Error",
-    ) -> None:
+    ):
         super().__init__(message, status_code, error)
 
 
@@ -29,7 +29,7 @@ class NotFoundError(DatabaseError):
         message,
         status_code=status.HTTP_404_NOT_FOUND,
         error="Resource Not Found",
-    ) -> None:
+    ):
         super().__init__(message, status_code, error)
 
 

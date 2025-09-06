@@ -16,7 +16,7 @@ class UserCreateS(UserBaseS):
 
 
 class UserUpdateS(UserBaseS):
-    pass
+    id: UUID
 
 
 class UserS(UserBaseS):

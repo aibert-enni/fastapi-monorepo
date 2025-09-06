@@ -43,7 +43,7 @@ async def login_user(
         value=tokens.refresh_token,
         httponly=True,
         secure=True,
-        samesite="Lax",
+        samesite="lax",
     )
     return AccessTokenS(access_token=tokens.access_token)
 
@@ -67,6 +67,6 @@ async def get_user_me(
 @router.post(
     "/logout", status_code=200, dependencies=[Depends(get_current_user_by_refresh)]
 )
-async def logout_user(response: Response) -> None:
+async def logout_user(response: Response) -> dict:
     response.delete_cookie(key="refresh_token", httponly=True, secure=True)
     return {"message": "Logget out"}
