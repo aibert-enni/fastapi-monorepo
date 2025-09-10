@@ -15,8 +15,9 @@ It consists of two main services that communicate with each other via **RabbitMQ
 - Stores and validates credentials, manages login and access control.
 
 ### Media Service
-- Handles media files (e.g., images, videos, etc.)
-- Stores media files in a cloud storage (e.g., Amazon S3).
+- Handles media files (for now only images)
+- Stores media files in a cloud storage (e.g., Amazon S3, Yandex storage).
+- Allows users to upload avatars and get their URLs or delete.
 
 ## Communication Flow
 

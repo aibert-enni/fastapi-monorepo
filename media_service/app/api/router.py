@@ -16,7 +16,7 @@ async def upload_avatar(
     user_id: UUID, file: UploadFile, media_service: MediaServiceDep
 ):
     db_file = await media_service.upload_avatar(file, user_id)
-    return {"url": db_file.url}
+    return {"id": db_file.id, "url": db_file.url}
 
 
 @router.get("/{file_id}/url")
