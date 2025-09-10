@@ -6,21 +6,14 @@ class DatabaseError(Exception):
         self,
         message: str,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        error: str = "API Error",
     ):
         self.message = message
         self.status_code = status_code
-        self.error = error
 
 
 class IntegrityError(DatabaseError):
-    def __init__(
-        self,
-        message,
-        status_code=status.HTTP_400_BAD_REQUEST,
-        error="Data Validation Error",
-    ):
-        super().__init__(message, status_code, error)
+    def __init__(self, message, status_code=status.HTTP_400_BAD_REQUEST):
+        super().__init__(message, status_code)
 
 
 class NotFoundError(DatabaseError):
@@ -28,16 +21,14 @@ class NotFoundError(DatabaseError):
         self,
         message,
         status_code=status.HTTP_404_NOT_FOUND,
-        error="Resource Not Found",
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message, status_code)
 
 
 class APIError(Exception):
-    def __init__(self, message: str, status_code: int, error: str = "API Error"):
+    def __init__(self, message: str, status_code: int):
         self.message = message
         self.status_code = status_code
-        self.error = error
 
 
 class CredentialError(APIError):
@@ -45,9 +36,8 @@ class CredentialError(APIError):
         self,
         message: str = "Invalid credentials",
         status_code: int = status.HTTP_401_UNAUTHORIZED,
-        error: str = "Credential Error",
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message, status_code)
 
 
 class AuthorizationError(APIError):
@@ -55,26 +45,35 @@ class AuthorizationError(APIError):
         self,
         message: str = "You don't have permission to access this resource.",
         status_code: int = status.HTTP_403_FORBIDDEN,
-        error: str = "Authorization Error",
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message, status_code)
 
 
 class ValidationError(APIError):
     def __init__(
-        self,
-        message: str,
-        status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY,
-        error: str = "Validation Error",
+        self, message: str, status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message, status_code)
+
+
+class BadRequestError(APIError):
+    def __init__(self, message: str, status_code: int = status.HTTP_400_BAD_REQUEST):
+        super().__init__(message, status_code)
 
 
 class ServiceUnavailableError(APIError):
     def __init__(
         self,
-        message: str = "Service unavailable",
+        message: str = "Service unavailable, please try later",
         status_code: int = status.HTTP_503_SERVICE_UNAVAILABLE,
-        error: str = "Service Unavailable Error",
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message, status_code)
+
+
+class UnsupportedMediaTypeError(APIError):
+    def __init__(
+        self,
+        message: str,
+        status_code: int = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+    ):
+        super().__init__(message, status_code)

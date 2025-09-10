@@ -1,10 +1,23 @@
+import logging
 from contextlib import asynccontextmanager
 from io import IOBase
-from typing import AsyncIterator
+from typing import Any, AsyncIterator, Awaitable, Callable, TypeVar
 
 from aiobotocore.session import AioBaseClient, get_session
+from botocore.exceptions import (
+    ClientError,
+    EndpointConnectionError,
+    NoCredentialsError,
+    NoRegionError,
+    ParamValidationError,
+)
 
 from app.core.settings import settings
+from app.exceptions.custom_exceptions import ServiceUnavailableError
+
+logger = logging.getLogger(__name__)
+
+T = TypeVar("T")
 
 
 class S3Client:
@@ -19,24 +32,94 @@ class S3Client:
         self.bucket_name = bucket_name
         self.session = get_session()
 
+    async def _call(
+        self,
+        function: Callable[..., Awaitable[T]],
+        handled_exceptions: tuple[type[BaseException], ...] = (),
+        *args: Any,
+        **kwargs: Any,
+    ) -> T:
+        """
+        Call S3 function with error handling
+        """
+        try:
+            return await function(*args, **kwargs)
+        except handled_exceptions as e:
+            raise e
+        except ParamValidationError as e:
+            logger.error(f"S3 params error: {e}")
+            raise ServiceUnavailableError
+        except ClientError as e:
+            logger.error(f"S3 client error: {e}")
+            raise ServiceUnavailableError
+        except Exception as e:
+            logger.error(f"S3 unknown error: {e}")
+            raise ServiceUnavailableError
+
     @asynccontextmanager
     async def get_client(self) -> AsyncIterator[AioBaseClient]:
-        async with self.session.create_client("s3", **self.config) as client:
-            yield client
+        try:
+            async with self.session.create_client("s3", **self.config) as client:
+                yield client
+        except (NoCredentialsError, NoRegionError) as e:
+            logger.error(f"S3 config error: {e}")
+            raise ServiceUnavailableError
+        except EndpointConnectionError as e:
+            logger.error(f"S3 endpoint unreachable: {e}")
+            raise ServiceUnavailableError
+        except Exception as e:
+            logger.error(f"S3 unknown error: {e}")
+            raise ServiceUnavailableError
 
-    async def upload(self, body: IOBase, key: str, content_type: str) -> str:
+    def get_public_url(self, key: str) -> str:
+        url = f"{self.config['endpoint_url']}/{self.bucket_name}/{key}"
+        return url
+
+    async def get_private_url(self, key: str, expire: int = 3600) -> str:
         async with self.get_client() as client:
-            resp = await client.put_object(
+            url = await client.generate_presigned_url(
+                "get_object",
+                Params={"Bucket": self.bucket_name, "Key": key},
+                ExpiresIn=expire,
+            )  # type: ignore
+        return url
+
+    async def public_upload(self, body: IOBase, key: str, content_type: str) -> None:
+        """
+        Upload file to S3 and get public url
+        """
+        async with self.get_client() as client:
+            resp = await self._call(
+                client.put_object,
                 Body=body,
                 Bucket=self.bucket_name,
                 Key=key,
-                ACL="public-read",
                 ContentType=content_type,
-            )  # type: ignore
-            print(resp)
-            url = f"{self.config.get('endpoint_url')}/{self.bucket_name}/{key}"
-            print(url)
-            return url
+                ACL="public-read",
+            )
+            logger.info(resp)
+
+    async def private_upload(
+        self, body: IOBase, key: str, content_type: str, expire: int = 3600
+    ) -> None:
+        """
+        Upload file to S3 and get private url
+        """
+        async with self.get_client() as client:
+            resp = await self._call(
+                client.put_object,
+                Body=body,
+                Bucket=self.bucket_name,
+                Key=key,
+                ContentType=content_type,
+            )
+            logger.info(resp)
+
+    async def delete(self, key: str) -> None:
+        async with self.get_client() as client:
+            return await self._call(
+                client.delete_object, Bucket=self.bucket_name, Key=key
+            )
 
 
 s3_client = S3Client(

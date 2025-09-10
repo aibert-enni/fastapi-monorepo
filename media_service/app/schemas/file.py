@@ -12,6 +12,12 @@ class FileS(BaseModel):
     type: FileType
     mime_type: str
     size: int
-    url: str
+    url: Optional[str] = None
+    key: Optional[str] = None
+    is_private: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class FileWithUsersS(FileS):
+    users_with_access: list[UUID]

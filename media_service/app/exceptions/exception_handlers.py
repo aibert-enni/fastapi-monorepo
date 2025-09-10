@@ -11,7 +11,6 @@ def setup_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=exc.status_code,
             content={
-                "error": exc.error,
                 "message": exc.message,
             },
         )
@@ -21,7 +20,6 @@ def setup_exception_handlers(app: FastAPI) -> None:
         return JSONResponse(
             status_code=exc.status_code,
             content={
-                "error": exc.error,
                 "message": exc.message,
             },
         )
