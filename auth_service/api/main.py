@@ -2,8 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api.v1 import router as v1_router
-from app.exceptions.exception_handlers import setup_exception_handlers
+from api.router.v1 import router as v1_router
+from api.exceptions.exception_handlers import setup_exception_handlers
 from app.services.brokers.rabbit.main import rabbit_broker_service
 
 

@@ -1,11 +1,6 @@
 from fastapi import APIRouter, Depends, Response
 
-from app.core.dependencies import (
-    AuthServiceDep,
-    GetCurrentUserByRefreshDep,
-    GetCurrentUserDep,
-    get_current_user_by_refresh,
-)
+
 from app.schemas.auth import (
     AuthBaseS,
     AuthCreateS,
@@ -15,6 +10,8 @@ from app.schemas.auth import (
 )
 from app.schemas.jwt_token import AccessTokenS
 from app.utils.jwt import create_access_token
+from api.dependencies.services import AuthServiceDep
+from api.dependencies.current_user import GetCurrentUserDep, GetCurrentUserByRefreshDep, get_current_user_by_refresh
 
 router = APIRouter(
     prefix="/auth",
@@ -30,7 +27,9 @@ async def register_user(
     create_schema = AuthCreateS(
         **schema.model_dump(), is_active=True, is_superuser=False
     )
-    return await auth_service.create_auth(create_schema)
+    auth_schema =  await auth_service.create_auth(create_schema)
+    response_schema = AuthRegisterResponseS.model_validate(auth_schema)
+    return response_schema
 
 
 @router.post("/login", status_code=200)

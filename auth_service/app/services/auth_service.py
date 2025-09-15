@@ -17,6 +17,7 @@ from app.utils.jwt import (
     TokenType,
     create_access_token,
     create_refresh_token,
+    decode_jwt,
 )
 from app.utils.password import hash_password, verify_password
 
@@ -60,7 +61,7 @@ class AuthService:
 
     async def login_user(self, schema: AuthLoginS) -> JWT_TokenS:
         user = await self.authenticate_user(schema)
-        jwt_dict = {"sub": user.id}
+        jwt_dict = {"sub": str(user.id)}
         access_token = create_access_token(jwt_dict)
         refresh_token = create_refresh_token(jwt_dict)
         return JWT_TokenS(access_token=access_token, refresh_token=refresh_token)
@@ -73,10 +74,23 @@ class AuthService:
         if payload.get(TOKEN_TYPE_FIELD) != token_type.value:
             raise CredentialError
 
-        username = payload.get("sub")
-        if username is None:
+        user_id = payload.get("sub")
+        if user_id is None:
             raise CredentialError
 
-        user = await self.auth_repository.get_by_id(username)
+        user = await self.auth_repository.get_by_id(user_id)
 
         return user
+
+    async def refresh_access_token(self, payload: dict) -> str:
+        
+        user = await self.get_auth_by_token(payload, token_type=TokenType.REFRESH)
+
+        if user is None:
+            raise CredentialError
+        if not user.is_active:
+            raise CredentialError(message="Account not activated")
+        
+        access_token = create_access_token({"sub": str(user.id)})
+
+        return access_token

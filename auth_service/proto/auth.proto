@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+service Auth {
+    rpc RegisterUser (AuthRegisterRequest) returns (AuthRegisterResponse);
+    rpc LoginUser (AuthLoginRequest) returns (AuthLoginResponse);
+    rpc RefreshAccessToken (RefreshAccessTokenRequest) returns (RefreshAccessTokenResponse);
+    rpc CurrentUser (CurrentUserRequest) returns (CurrentUserResponse);
+}
+
+message AuthRegisterRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+}
+
+message AuthRegisterResponse {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+}
+
+message AuthLoginRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message AuthLoginResponse {
+    string access_token = 1;
+    string refresh_token = 2;
+}
+
+message RefreshAccessTokenRequest {
+    map<string, string> payload = 1;
+}
+
+message RefreshAccessTokenResponse {
+    string access_token = 1;
+}
+
+message CurrentUserRequest {
+    map<string, string> payload = 1;
+}
+
+message User {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    bool is_active = 4;
+    bool is_superuser = 5;
+}
+
+message CurrentUserResponse {
+    User user = 1;
+}
