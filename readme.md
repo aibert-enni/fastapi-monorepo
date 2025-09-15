@@ -1,9 +1,13 @@
 # Microservices Authorization Project
 
-This project demonstrates a **microservices-based architecture** for handling user authorization.
-It consists of two main services that communicate with each other via **RabbitMQ**. Also media service for storing media files.
+This project demonstrates a **microservices-based architecture** for handling user authorization.  
+The services communicate with each other via **RabbitMQ**, while the **API Gateway** interacts with the services using **gRPC**.
 
 ## Services
+
+### API Gateway
+- Gateway between frontend and backend
+- The communication between services is done via gRPC
 
 ### User Service
 - Manages user data (registration, profile, etc.).
@@ -28,18 +32,12 @@ It consists of two main services that communicate with each other via **RabbitMQ
 ## Tech Stack
 
 - **FastAPI** – web framework for building services
+- **gRPC** – inter-service communication
 - **RabbitMQ** – message broker for asynchronous communication
 - **PostgreSQL** – persistence layer
 - **Docker Compose** – container orchestration
 - **Pytest** – testing framework
 - **S3** – cloud object storage for media files
-## Project Structure
-
-├── auth-service/ # Authentication service
-├── user-service/ # User service
-├── media-service/ # Media service
-├── docker-compose.yml # RabbitMQ + databases
-
 
 ## Running the Project
 
@@ -56,6 +54,20 @@ docker compose up -d
 ```
 
 Start services:
+
+API Gateway:
+```bash
+cd api_gateway
+poetry run uvicorn api.main:app
+```
+
+Start auth grpc service:
+```bash
+cd auth_service
+poetry run py -m rpc.main
+```
+
+Start services via Docker:
 
 Start user service:
 ```bash
@@ -99,9 +111,10 @@ cd auth_service/tests
 python -m pytest
 ```
 ## Documentation
+API Gateway doc: http://localhost:8000/docs
 
-User API doc: http://localhost:8000/docs
 Auth API doc: http://localhost:8001/docs
 Media API doc: http://localhost:8002/docs
+User API doc: http://localhost:8003/docs
 
 RabbitMQ management UI: http://localhost:15672

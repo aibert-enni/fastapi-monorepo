@@ -19,7 +19,7 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 )
 # @@protoc_insertion_point(imports)
 
-_sym_db = _symbol_database.Default()
+_sym_db = _symbol_database.Default() # noqa: F401
 
 
 
