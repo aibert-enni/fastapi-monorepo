@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+service Media {
+    rpc UploadAvatar (UploadAvatarRequest) returns (UploadAvatarResponse);
+    rpc GetFileUrl (GetFileUrlRequest) returns (GetFileUrlResponse);
+    rpc DeleteFile (DeleteFileRequest) returns (DeleteFileResponse);
+}
+
+message UploadAvatarRequest {
+    string owner_id = 1;
+    bytes file = 2;
+    string content_type = 3;
+}
+
+message UploadAvatarResponse {
+    string id = 1;
+    string url = 2;
+}
+
+message GetFileUrlRequest {
+    string id = 1;
+}
+
+message GetFileUrlResponse {
+    string url = 1;
+}
+
+message DeleteFileRequest {
+    string file_id = 1;
+    string user_id = 2;
+    bool is_superuser = 3;
+}
+
+message DeleteFileResponse {
+    string status = 1;
+}

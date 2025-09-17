@@ -1,8 +1,9 @@
 from uuid import UUID
 
+from api.dependencies.services import MediaServiceDep
 from fastapi import APIRouter, UploadFile
 
-from app.core.dependencies import MediaServiceDep
+from app.exceptions.custom_exceptions import UnsupportedMediaTypeError
 
 router = APIRouter(
     prefix="/files",
@@ -15,7 +16,11 @@ router = APIRouter(
 async def upload_avatar(
     user_id: UUID, file: UploadFile, media_service: MediaServiceDep
 ):
-    db_file = await media_service.upload_avatar(file, user_id)
+    if file.content_type is None:
+        raise UnsupportedMediaTypeError(
+                message="Invalid file type, file must be an image"
+            )
+    db_file = await media_service.upload_avatar(file.file, user_id, content_type=file.content_type)
     return {"id": db_file.id, "url": db_file.url}
 
 

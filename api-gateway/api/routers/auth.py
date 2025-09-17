@@ -64,6 +64,7 @@ async def refresh_access_token(request: Request) -> RefreshAccessTokenResponse:
         payload = decode_jwt(refresh_token)
     except Exception:
         raise CredentialError
+
     
     async with grpc.aio.insecure_channel(settings.grpc.auth_url) as channel:
         stub = auth_pb2_grpc.AuthStub(channel)

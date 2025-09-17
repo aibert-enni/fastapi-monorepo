@@ -1,7 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
-from io import IOBase
-from typing import Any, AsyncIterator, Awaitable, Callable, TypeVar
+from typing import Any, AsyncIterator, Awaitable, BinaryIO, Callable, TypeVar
 
 from aiobotocore.session import AioBaseClient, get_session
 from botocore.exceptions import (
@@ -84,12 +83,12 @@ class S3Client:
             )  # type: ignore
         return url
 
-    async def public_upload(self, body: IOBase, key: str, content_type: str) -> None:
+    async def public_upload(self, body: BinaryIO, key: str, content_type: str) -> None:
         """
         Upload file to S3 and get public url
         """
         async with self.get_client() as client:
-            resp = await self._call(
+            await self._call(
                 client.put_object,
                 Body=body,
                 Bucket=self.bucket_name,
@@ -97,23 +96,21 @@ class S3Client:
                 ContentType=content_type,
                 ACL="public-read",
             )
-            logger.info(resp)
 
     async def private_upload(
-        self, body: IOBase, key: str, content_type: str, expire: int = 3600
+        self, body: BinaryIO, key: str, content_type: str, expire: int = 3600
     ) -> None:
         """
         Upload file to S3 and get private url
         """
         async with self.get_client() as client:
-            resp = await self._call(
+            await self._call(
                 client.put_object,
                 Body=body,
                 Bucket=self.bucket_name,
                 Key=key,
                 ContentType=content_type,
             )
-            logger.info(resp)
 
     async def delete(self, key: str) -> None:
         async with self.get_client() as client:

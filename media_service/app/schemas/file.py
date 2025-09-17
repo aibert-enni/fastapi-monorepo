@@ -18,6 +18,17 @@ class FileS(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class FileFilledS(BaseModel):
+    id: UUID
+    owner_id: Optional[UUID] = None
+    type: FileType
+    mime_type: str
+    size: int
+    url: str
+    key: str
+    is_private: bool
+
+    model_config = ConfigDict(from_attributes=True)
 
 class FileWithUsersS(FileS):
     users_with_access: list[UUID]

@@ -1,22 +1,23 @@
 import io
-from typing import Literal, Optional
+from typing import BinaryIO, Literal, Optional
 from uuid import UUID
 from venv import logger
 
-from fastapi import UploadFile, status
+from fastapi import status
+from grpc import StatusCode
 from PIL import Image, UnidentifiedImageError
 from sqlalchemy.exc import IntegrityError as SQL_IntegrityError
 
 from app.exceptions.custom_exceptions import (
     APIError,
     AuthorizationError,
-    BadRequestError,
+    NotFoundError,
     UnsupportedMediaTypeError,
     ValidationError,
 )
 from app.models.file import FileType
 from app.repository import FileRepository
-from app.schemas.file import FileS
+from app.schemas.file import FileFilledS, FileS
 from app.services.s3_service import S3Client
 
 
@@ -28,7 +29,7 @@ class MediaService:
         self.file_repository = file_repository
         self.file_service = file_service
 
-    def get_file_size(self, file: io.IOBase) -> int:
+    def get_file_size(self, file: BinaryIO) -> int:
         pos = file.tell()
         file.seek(0, io.SEEK_END)
         size = file.tell()
@@ -37,14 +38,14 @@ class MediaService:
 
     async def upload(
         self,
-        file: io.IOBase,
+        file: BinaryIO,
         file_type: FileType,
         content_type: str,
         file_path: str,
         owner_id: Optional[UUID] = None,
         file_expire: int = 3600,
         visibility: Literal["public", "private"] = "public",
-    ) -> FileS:
+    ) -> FileFilledS:
         file.seek(0)
         size = self.get_file_size(file)
         try:
@@ -81,25 +82,28 @@ class MediaService:
         except SQL_IntegrityError as db_exc:
             logger.error(f"DB error for file {file_path}, owner {owner_id}: {db_exc}")
 
-        return db_file
+        return FileFilledS(**db_file.model_dump())
 
     async def upload_avatar(
         self,
-        file: UploadFile,
+        file: BinaryIO,
         owner_id: UUID,
-    ) -> FileS:
-        if file.content_type and not file.content_type.startswith("image/"):
+        content_type: str,
+    ) -> FileFilledS:
+        if content_type and not content_type.startswith("image/"):
             raise UnsupportedMediaTypeError(
                 message="Invalid file type, file must be an image"
             )
-        if file.size and file.size > self.MAX_AVATAR_SIZE:
+        size = self.get_file_size(file)
+        if size and size > self.MAX_AVATAR_SIZE:
             raise APIError(
-                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                grpc_code=StatusCode.INVALID_ARGUMENT,
+                http_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                 message="File is too large, maximum size is 5MB",
             )
         try:
-            file.file.seek(0)
-            with Image.open(file.file) as image:
+            file.seek(0)
+            with Image.open(file) as image:
                 image = image.convert("RGB")
                 image.thumbnail(self.AVATAR_SIZE)
                 buffer = io.BytesIO()
@@ -127,17 +131,20 @@ class MediaService:
     async def get_file_url(self, file_id: UUID, user_id: Optional[UUID] = None) -> str:
         file = await self.file_repository.get_with_users(file_id)
         if file is None or file.url is None:
-            raise BadRequestError(message="File not found")
+            raise NotFoundError(message="File not found")
         if file.is_private and (
             file.owner_id != user_id or user_id not in file.users_with_access
         ):
             raise AuthorizationError(message="Access denied")
         return file.url
 
-    async def delete_file(self, file_id: UUID) -> None:
+    async def delete_file(self, file_id: UUID, user_id: UUID, is_superuser: bool = False) -> None:
         file_db = await self.file_repository.get(file_id)
         if file_db is None:
-            raise BadRequestError(message="File not found")
+            raise NotFoundError(message="File not found")
+        if str(file_db.owner_id) != user_id:
+            if not is_superuser:
+                raise AuthorizationError(message="You don't have permission to delete")
         await self.file_repository.delete(file_id)
         await self.file_repository.session.commit()
         if file_db.url is None or file_db.key is None:

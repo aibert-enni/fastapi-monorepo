@@ -40,6 +40,7 @@ ruff = "^0.12.10"
 pre-commit = "^4.3.0"
 factory-boy = "^3.3.3"
 async-factory-boy = "^1.0.1"
+mypy-protobuf = "^3.6.0"
 
 [tool.ruff]
 line-length = 88

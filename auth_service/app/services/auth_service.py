@@ -27,6 +27,9 @@ class AuthService:
         self.auth_repository = auth_repository
         self.broker = broker
 
+    def _get_jwt_dict(self, user: AuthS) -> dict:
+        return {"sub": str(user.id), "username": user.username, "email": user.email, "is_active": user.is_active, "is_superuser": user.is_superuser}
+
     async def create_auth(self, schema: AuthCreateS) -> AuthS:
         hashed_password = hash_password(schema.password)
         user_schema = AuthS(
@@ -61,7 +64,7 @@ class AuthService:
 
     async def login_user(self, schema: AuthLoginS) -> JWT_TokenS:
         user = await self.authenticate_user(schema)
-        jwt_dict = {"sub": str(user.id), "username": user.username, "email": user.email, "is_active": user.is_active, "is_superuser": user.is_superuser}
+        jwt_dict = self._get_jwt_dict(user)
         access_token = create_access_token(jwt_dict)
         refresh_token = create_refresh_token(jwt_dict)
         return JWT_TokenS(access_token=access_token, refresh_token=refresh_token)
@@ -91,6 +94,8 @@ class AuthService:
         if not user.is_active:
             raise CredentialError(message="Account not activated")
         
-        access_token = create_access_token({"sub": str(user.id)})
+        jwt_dict = self._get_jwt_dict(user)
+
+        access_token = create_access_token(jwt_dict)
 
         return access_token

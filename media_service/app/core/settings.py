@@ -20,12 +20,15 @@ class S3Settings(BaseModel):
     endpoint_url: str
     bucket_name: str
 
+class GRPCSettings(BaseModel):
+    port: str
 
 class CommonSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),
         env_nested_delimiter="__",
     )
+    grpc: GRPCSettings
     db: DBSettings
     rabbit: RabbitSettings
     s3: S3Settings

@@ -24,7 +24,6 @@ class IntegrityError(APIError):
     def __init__(self, message: str = "Data validation error"):
         super().__init__(message)
 
-
 class NotFoundError(APIError):
     grpc_code = StatusCode.NOT_FOUND
     http_code=status.HTTP_404_NOT_FOUND

@@ -5,14 +5,14 @@ from grpc import StatusCode
 
 
 class AppError(Exception):
-    http_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-    grpc_code = StatusCode = StatusCode.INTERNAL
-    
+    http_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    grpc_code = StatusCode.INTERNAL
+
     def __init__(
         self,
         message: str,
         http_code: Optional[int]= None,
-        grpc_code:  Optional[int] = None
+        grpc_code:  Optional[StatusCode] = None
     ):
         self.message = message
         if http_code is not None:
