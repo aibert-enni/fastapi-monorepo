@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from app.schemas.base import UUIDMixinS
 
+
 class AuthS(UUIDMixinS):
     username: str
     email: str

@@ -17,7 +17,6 @@ from app.utils.jwt import (
     TokenType,
     create_access_token,
     create_refresh_token,
-    decode_jwt,
 )
 from app.utils.password import hash_password, verify_password
 

@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 
-from api.router.v1 import router as v1_router
 from api.exceptions.exception_handlers import setup_exception_handlers
-
+from api.router.v1 import router as v1_router
 
 app = FastAPI(
     root_path="/api", title="API Gateway", version="0.0.1"

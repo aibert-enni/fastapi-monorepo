@@ -1,14 +1,14 @@
 from typing import Annotated
 
+import grpc
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-import grpc
+from proto.auth import auth_pb2, auth_pb2_grpc
 
 from app.core.settings import settings
 from app.exceptions.custom_exceptions import AuthorizationError, CredentialError
-from app.utils.jwt import decode_jwt
 from app.schemas.auth import AuthS
-from proto.auth import auth_pb2_grpc, auth_pb2
+from app.utils.jwt import decode_jwt
 
 http_bearer = HTTPBearer(auto_error=False)
 

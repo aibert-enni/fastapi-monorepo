@@ -1,13 +1,21 @@
 import logging
-from fastapi import APIRouter, Request, Response, status
+
 import grpc
+from api.dependencies.current_user import GetCurrentUserDep
+from fastapi import APIRouter, Request, Response, status
+from proto.auth import auth_pb2, auth_pb2_grpc
 
 from app.core.settings import settings
-from app.schemas.auth import AuthRegisterRequestS, AuthRegisterResponseS, AuthLoginRequestS, AuthLoginResponseS, RefreshAccessTokenResponse, AuthMeResponse
 from app.exceptions.custom_exceptions import CredentialError
+from app.schemas.auth import (
+    AuthLoginRequestS,
+    AuthLoginResponseS,
+    AuthMeResponse,
+    AuthRegisterRequestS,
+    AuthRegisterResponseS,
+    RefreshAccessTokenResponse,
+)
 from app.utils.jwt import decode_jwt
-from api.dependencies.current_user import GetCurrentUserDep
-from proto.auth import auth_pb2_grpc, auth_pb2
 
 logger = logging.getLogger(__name__)
 

@@ -2,6 +2,7 @@ import jwt
 
 from app.core.settings import settings
 
+
 def decode_jwt(
     token: str | bytes,
     public_key: str = settings.jwt.PUBLIC_KEY_PATH.read_text(),

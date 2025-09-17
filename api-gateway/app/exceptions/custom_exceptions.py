@@ -1,6 +1,7 @@
 from fastapi import status
 from grpc import StatusCode
 
+
 class AppError(Exception):
     def __init__(
         self,

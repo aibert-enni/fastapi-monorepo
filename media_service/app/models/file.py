@@ -31,12 +31,12 @@ class FileOrm(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):
         Boolean, server_default="false", default=False, nullable=False
     )
 
-    users_with_access: Mapped[list["UserFileAccess"]] = relationship(
-        "UserFileAccess", back_populates="file"
+    users_with_access: Mapped[list["UserFileAccessOrm"]] = relationship(
+        "UserFileAccessOrm", back_populates="file"
     )
 
 
-class UserFileAccess(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):
+class UserFileAccessOrm(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):
     __tablename__ = "users_files_access"
 
     user_id: Mapped[UUID] = mapped_column(nullable=False)

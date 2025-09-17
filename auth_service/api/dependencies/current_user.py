@@ -1,5 +1,6 @@
 from typing import Annotated
 
+from api.dependencies.services import get_auth_service
 from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
@@ -7,7 +8,6 @@ from app.exceptions.custom_exceptions import AuthorizationError, CredentialError
 from app.schemas.auth import AuthS
 from app.services.auth_service import AuthService
 from app.utils.jwt import TokenType, decode_jwt
-from api.dependencies.services import get_auth_service
 
 http_bearer = HTTPBearer(auto_error=False)
 

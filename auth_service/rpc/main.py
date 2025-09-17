@@ -1,19 +1,16 @@
 import asyncio
 import logging
-import grpc
 from concurrent import futures
+
+import grpc
+from proto import auth_pb2, auth_pb2_grpc
+from rpc.dependencies.services import get_auth_service
+from rpc.interceptors.exception_handler import ErrorInterceptor
 
 from app.core.settings import settings
 from app.exceptions.custom_exceptions import CredentialError
-from rpc.dependencies.services import get_auth_service
-from proto import auth_pb2
-from proto import auth_pb2_grpc
-
-from rpc.interceptors.exception_handler import ErrorInterceptor
-
-from app.services.brokers.rabbit.main import rabbit_broker_service
 from app.schemas.auth import AuthCreateS, AuthLoginS
-
+from app.services.brokers.rabbit.main import rabbit_broker_service
 
 logging.basicConfig(
     level=logging.INFO,

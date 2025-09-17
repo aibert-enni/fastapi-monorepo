@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
+
 from app.core.db import session_maker
 from app.repository import AuthRepository
-from app.services.brokers.rabbit.main import rabbit_broker_service
 from app.services.auth_service import AuthService
+from app.services.brokers.rabbit.main import rabbit_broker_service
+
 
 @asynccontextmanager
 async def get_auth_service() -> AsyncIterator[AuthService]:

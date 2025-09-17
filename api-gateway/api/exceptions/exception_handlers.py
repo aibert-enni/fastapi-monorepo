@@ -1,7 +1,7 @@
 import json
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-
 from grpc.aio import AioRpcError
 
 from app.exceptions.custom_exceptions import APIError
@@ -25,7 +25,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
             json_response = json.loads(details) if details else {}
             if json_response is str:
                 json_response = {}
-        except:
+        except Exception:
             json_response = {}
         http_code = json_response.get("http_code", 500)
         http_code = int(http_code)

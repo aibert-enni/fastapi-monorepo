@@ -1,5 +1,10 @@
+from api.dependencies.current_user import (
+    GetCurrentUserByRefreshDep,
+    GetCurrentUserDep,
+    get_current_user_by_refresh,
+)
+from api.dependencies.services import AuthServiceDep
 from fastapi import APIRouter, Depends, Response
-
 
 from app.schemas.auth import (
     AuthBaseS,
@@ -10,8 +15,6 @@ from app.schemas.auth import (
 )
 from app.schemas.jwt_token import AccessTokenS
 from app.utils.jwt import create_access_token
-from api.dependencies.services import AuthServiceDep
-from api.dependencies.current_user import GetCurrentUserDep, GetCurrentUserByRefreshDep, get_current_user_by_refresh
 
 router = APIRouter(
     prefix="/auth",
