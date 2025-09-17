@@ -7,6 +7,7 @@ from app.exceptions.custom_exceptions import (
     CredentialError,
     IntegrityError,
     NotFoundError,
+    ValidationError,
 )
 from app.repository import AuthRepository
 from app.schemas.auth import AuthCreateS, AuthLoginS, AuthS
@@ -55,12 +56,12 @@ class AuthService:
         if not user.is_active:
             raise AuthorizationError(message="User is not active")
         if not verify_password(schema.password, user.hashed_password):
-            raise AuthorizationError(message="Invalid password")
+            raise ValidationError(message="Invalid password")
         return user
 
     async def login_user(self, schema: AuthLoginS) -> JWT_TokenS:
         user = await self.authenticate_user(schema)
-        jwt_dict = {"sub": str(user.id)}
+        jwt_dict = {"sub": str(user.id), "username": user.username, "email": user.email, "is_active": user.is_active, "is_superuser": user.is_superuser}
         access_token = create_access_token(jwt_dict)
         refresh_token = create_refresh_token(jwt_dict)
         return JWT_TokenS(access_token=access_token, refresh_token=refresh_token)

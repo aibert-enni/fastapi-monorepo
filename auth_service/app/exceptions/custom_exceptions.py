@@ -1,17 +1,24 @@
+from typing import Optional
+
 from fastapi import status
 from grpc import StatusCode
 
 
 class AppError(Exception):
+    http_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+    grpc_code = StatusCode = StatusCode.INTERNAL
+    
     def __init__(
         self,
         message: str,
-        http_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        grpc_code: StatusCode = StatusCode.INTERNAL
+        http_code: Optional[int]= None,
+        grpc_code:  Optional[int] = None
     ):
         self.message = message
-        self.http_code = http_code
-        self.grpc_code = grpc_code
+        if http_code is not None:
+            self.http_code = http_code
+        if grpc_code is not None:
+            self.grpc_code = grpc_code
 
 
 class APIError(AppError):

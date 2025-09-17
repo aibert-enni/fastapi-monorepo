@@ -1,11 +1,8 @@
 from typing import Annotated
 
-import grpc
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from proto.auth import auth_pb2, auth_pb2_grpc
 
-from app.core.settings import settings
 from app.exceptions.custom_exceptions import AuthorizationError, CredentialError
 from app.schemas.auth import AuthS
 from app.utils.jwt import decode_jwt
@@ -35,14 +32,10 @@ async def get_current_user(
     """
     Retrieve the current user based on the provided HTTP authorization credentials.
     """
-    async with grpc.aio.insecure_channel(settings.grpc.auth_url) as channel:
-        stub = auth_pb2_grpc.AuthStub(channel)
-        request = auth_pb2.CurrentUserRequest(payload=payload)
-        response = await stub.CurrentUser(request)
-
-    user = response.user
-
-    user = AuthS(id=user.id, username=user.username, email=user.email, is_active=user.is_active, is_superuser=user.is_superuser)
+    try:
+        user = AuthS(id=payload.get("sub"), username=payload.get("username"), email=payload.get("email"), is_active=payload.get("is_active"), is_superuser=payload.get("is_superuser")) # type: ignore
+    except Exception:
+        raise CredentialError
 
     if user is None:
         raise CredentialError

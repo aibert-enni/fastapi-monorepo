@@ -22,13 +22,13 @@ class ErrorInterceptor(grpc.aio.ServerInterceptor):
                 try:
                     return await handler.unary_unary(request, context) # type: ignore
                 except APIError as e:
-                    logger.error(e)
                     details = {
                         "http_code": e.http_code,
                         "error": {
                             "message": e.message
                         }
                     }
+                    logger.error(details)
                     details_json = json.dumps(details, ensure_ascii=False)
                     context.set_details(details_json)
                     context.set_code(e.grpc_code)

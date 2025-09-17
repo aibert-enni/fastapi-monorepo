@@ -9,6 +9,9 @@ class AuthS(UUIDMixinS):
     is_active: bool
     is_superuser: bool
 
+class BaseAuth(UUIDMixinS):
+    username: str
+
 class AuthMeResponse(UUIDMixinS):
     username: str
 
