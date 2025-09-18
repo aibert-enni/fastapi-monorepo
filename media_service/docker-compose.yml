@@ -38,8 +38,7 @@ services:
       /bin/sh -c "
         sleep 5 &&
         mc alias set local http://minio:9000 admin password &&
-        mc mb -p local/uploads &&
-        mc mb -p local/test
+        mc mb -p local/uploads
       "
 
 volumes:

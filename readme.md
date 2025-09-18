@@ -37,7 +37,7 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 - **PostgreSQL** – persistence layer
 - **Docker Compose** – container orchestration
 - **Pytest** – testing framework
-- **S3** – cloud object storage for media files
+- **Minio** – aws object storage for media files
 
 ## Running the Project
 
@@ -110,6 +110,19 @@ Run tests:
 cd auth_service/tests
 python -m pytest
 ```
+
+### Media test
+Up docker:
+```bash
+cd auth_service/tests
+docker compose up
+```
+Run tests:
+```bash
+cd auth_service/tests
+python -m pytest
+```
+
 ## Documentation
 API Gateway doc: http://localhost:8000/docs
 
