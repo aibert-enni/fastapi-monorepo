@@ -2,11 +2,13 @@ import asyncio
 import io
 import logging
 from concurrent import futures
+from uuid import UUID
 
 import grpc
 from proto import media_pb2, media_pb2_grpc
 
 from app.core.settings import settings
+from app.exceptions.custom_exceptions import ValidationError
 from rpc.dependencies.services import get_media_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
@@ -29,8 +31,17 @@ class AuthServicer(media_pb2_grpc.MediaServicer):
         return media_pb2.GetFileUrlResponse(url=url)
     
     async def DeleteFile(self, request, context):
+        try:
+            file_id = request.file_id
+        except Exception:
+            raise ValidationError(message="file id format is invalid")
+        
+        try:
+            user_id = UUID(request.user_id)
+        except Exception:
+            raise ValidationError(message="user id format is invalid")
         async with get_media_service() as media_service:
-            await media_service.delete_file(file_id=request.file_id, user_id=request.user_id, is_superuser=request.is_superuser)
+            await media_service.delete_file(file_id=file_id, user_id=user_id, is_superuser=request.is_superuser)
         return media_pb2.DeleteFileResponse(status="success")
     
 
