@@ -5,6 +5,7 @@ from api.dependencies.services import MediaServiceDep
 from fastapi import APIRouter, UploadFile
 
 from app.exceptions.custom_exceptions import UnsupportedMediaTypeError
+from app.schemas.file import FileDeleteS
 
 router = APIRouter(
     prefix="/files",
@@ -32,6 +33,6 @@ async def get_file_url(file_id: UUID, media_service: MediaServiceDep):
 
 
 @router.delete("/{file_id}")
-async def delete_file(file_id: UUID, media_service: MediaServiceDep):
-    await media_service.delete_file(file_id=file_id, user_id=uuid.uuid4(), is_superuser=True)
+async def delete_file(file_id: UUID, schema: FileDeleteS, media_service: MediaServiceDep):
+    await media_service.delete_file(file_id=file_id, user_id=schema.user_id)
     return {"message": "File deleted"}
