@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exceptions.custom_exceptions import (
     IntegrityError,
@@ -36,8 +37,8 @@ async def test_create_user(auth_service: AuthService) -> None:
 
 
 @pytest.mark.asyncio
-async def test_login_user(auth_service: AuthService) -> None:
-    test_auth = await AuthFactory.create()
+async def test_login_user(auth_service: AuthService, db_session: AsyncSession) -> None:
+    test_auth = await AuthFactory.create(session=db_session)
 
     with pytest.raises(NotFoundError):
         await auth_service.login_user(

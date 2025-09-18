@@ -1,10 +1,9 @@
-from typing import AsyncIterable
+from typing import AsyncIterator
 
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.models.base import BaseOrm
-from tests.factories import AuthFactory
 
 db_url = "postgresql+asyncpg://postgres:postgres@localhost:5434/test_db"
 
@@ -12,7 +11,7 @@ db_url = "postgresql+asyncpg://postgres:postgres@localhost:5434/test_db"
 @pytest_asyncio.fixture(scope="function")
 async def engine():
     """Создаём engine на всё время тестов"""
-    engine = create_async_engine(db_url, future=True, echo=True)
+    engine = create_async_engine(db_url, future=True)
 
     # создаём таблицы один раз перед тестами
     async with engine.begin() as conn:
@@ -24,8 +23,8 @@ async def engine():
     await engine.dispose()
 
 
-@pytest_asyncio.fixture(scope="function")
-async def db_session(engine) -> AsyncIterable[AsyncSession]:
+@pytest_asyncio.fixture(autouse=True)
+async def db_session(engine) -> AsyncIterator[AsyncSession]:
     async_session = async_sessionmaker(
         bind=engine,
         expire_on_commit=False,
@@ -33,9 +32,3 @@ async def db_session(engine) -> AsyncIterable[AsyncSession]:
     )
     async with async_session() as session:
         yield session
-
-
-@pytest_asyncio.fixture(autouse=True)
-async def set_factory_session(db_session: AsyncSession):
-    for factory in [AuthFactory]:
-        factory._meta.sqlalchemy_session = db_session
