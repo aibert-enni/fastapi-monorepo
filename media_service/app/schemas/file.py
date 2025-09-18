@@ -34,3 +34,6 @@ class FileFilledS(BaseModel):
 
 class FileWithUsersS(FileS):
     users_with_access: list[UUID]
+
+class FileDeleteS(BaseModel):
+    user_id: UUID

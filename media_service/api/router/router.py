@@ -1,3 +1,4 @@
+import uuid
 from uuid import UUID
 
 from api.dependencies.services import MediaServiceDep
@@ -32,5 +33,5 @@ async def get_file_url(file_id: UUID, media_service: MediaServiceDep):
 
 @router.delete("/{file_id}")
 async def delete_file(file_id: UUID, media_service: MediaServiceDep):
-    await media_service.delete_file(file_id)
+    await media_service.delete_file(file_id=file_id, user_id=uuid.uuid4(), is_superuser=True)
     return {"message": "File deleted"}
