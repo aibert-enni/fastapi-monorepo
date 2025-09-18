@@ -41,6 +41,8 @@ pre-commit = "^4.3.0"
 factory-boy = "^3.3.3"
 async-factory-boy = "^1.0.1"
 mypy-protobuf = "^3.6.0"
+requests = "^2.32.5"
+httpx = "^0.28.1"
 
 [tool.ruff]
 line-length = 88
