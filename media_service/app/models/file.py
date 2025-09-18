@@ -1,7 +1,16 @@
 import enum
+from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import BigInteger, Boolean, ForeignKey, String, Text, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    String,
+    Text,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import ENUM as PGEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -26,6 +35,7 @@ class FileOrm(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):
     size: Mapped[int] = mapped_column(BigInteger, nullable=False)
     url: Mapped[str] = mapped_column(Text, unique=True, nullable=True)
     key: Mapped[str] = mapped_column(Text, unique=True, nullable=True)
+    expire: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
 
     is_private: Mapped[bool] = mapped_column(
         Boolean, server_default="false", default=False, nullable=False

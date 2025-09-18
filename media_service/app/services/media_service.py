@@ -1,16 +1,16 @@
 import io
+from datetime import datetime, timedelta, timezone
 from typing import BinaryIO, Literal, Optional
 from uuid import UUID
 from venv import logger
 
-from fastapi import status
-from grpc import StatusCode
 from PIL import Image, UnidentifiedImageError
 from sqlalchemy.exc import IntegrityError as SQL_IntegrityError
 
+from app.core.settings import settings
 from app.exceptions.custom_exceptions import (
-    APIError,
     AuthorizationError,
+    FileTooLargeError,
     NotFoundError,
     UnsupportedMediaTypeError,
     ValidationError,
@@ -43,7 +43,7 @@ class MediaService:
         content_type: str,
         file_path: str,
         owner_id: Optional[UUID] = None,
-        file_expire: int = 3600,
+        file_expire: int = settings.file.default_expire_seconds,
         visibility: Literal["public", "private"] = "public",
     ) -> FileFilledS:
         file.seek(0)
@@ -71,12 +71,13 @@ class MediaService:
                 file, file_path, content_type, file_expire
             )
         else:
-            file_url = self.file_service.get_public_url(file_path)
+            file_url = await self.file_service.get_private_url(file_path, file_expire)
             await self.file_service.public_upload(file, file_path, content_type)
 
         try:
             db_file.url = file_url
             db_file.key = file_path
+            db_file.expire = datetime.now(timezone.utc) + timedelta(seconds=file_expire)
             await self.file_repository.update(db_file)
             await self.file_repository.session.commit()
         except SQL_IntegrityError as db_exc:
@@ -96,9 +97,7 @@ class MediaService:
             )
         size = self.get_file_size(file)
         if size and size > self.MAX_AVATAR_SIZE:
-            raise APIError(
-                grpc_code=StatusCode.INVALID_ARGUMENT,
-                http_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            raise FileTooLargeError(
                 message="File is too large, maximum size is 5MB",
             )
         try:
@@ -133,16 +132,25 @@ class MediaService:
         if file is None or file.url is None:
             raise NotFoundError(message="File not found")
         if file.is_private and (
-            file.owner_id != user_id or user_id not in file.users_with_access
+            file.owner_id != user_id and user_id not in file.users_with_access
         ):
             raise AuthorizationError(message="Access denied")
+        now = datetime.now(timezone.utc)
+        if file.expire is None or file.expire < now:
+            if file.key is None:
+                raise NotFoundError(message="File not found")
+            url = await self.file_service.get_private_url(file.key, settings.file.default_expire_seconds)
+            file.url = url
+            file.expire = now + timedelta(seconds=settings.file.default_expire_seconds)
+            await self.file_repository.update(file=file)
+            await self.file_repository.session.commit()
         return file.url
 
     async def delete_file(self, file_id: UUID, user_id: UUID, is_superuser: bool = False) -> None:
         file_db = await self.file_repository.get(file_id)
         if file_db is None:
             raise NotFoundError(message="File not found")
-        if str(file_db.owner_id) != user_id:
+        if file_db.owner_id != user_id:
             if not is_superuser:
                 raise AuthorizationError(message="You don't have permission to delete")
         await self.file_repository.delete(file_id)

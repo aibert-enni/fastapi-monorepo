@@ -23,6 +23,9 @@ class S3Settings(BaseModel):
 class GRPCSettings(BaseModel):
     port: str
 
+class FileSettings(BaseModel):
+    default_expire_seconds: int = 3600 # 1 hour
+
 class CommonSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),
@@ -32,6 +35,7 @@ class CommonSettings(BaseSettings):
     db: DBSettings
     rabbit: RabbitSettings
     s3: S3Settings
+    file: FileSettings = FileSettings()
 
 
 settings = CommonSettings()  # type: ignore

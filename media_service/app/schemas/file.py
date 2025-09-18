@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
@@ -15,6 +16,7 @@ class FileS(BaseModel):
     url: Optional[str] = None
     key: Optional[str] = None
     is_private: bool
+    expire: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 

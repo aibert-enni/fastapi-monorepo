@@ -24,7 +24,7 @@ class FileRepository:
         stmt = (
             update(FileOrm)
             .where(FileOrm.id == file.id)
-            .values(**file.model_dump(exclude={"id"}))
+            .values(**file.model_dump(exclude={"id", "users_with_access"}))
             .execution_options(synchronize_session="fetch")
         )
         await self.session.execute(stmt)

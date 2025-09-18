@@ -86,3 +86,10 @@ class UnsupportedMediaTypeError(APIError):
         message: str,
     ):
         super().__init__(message)
+
+class FileTooLargeError(APIError):
+    grpc_code=StatusCode.INVALID_ARGUMENT
+    http_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+
+    def __init__(self, message: str):
+        super().__init__(message)

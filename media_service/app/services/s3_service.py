@@ -74,7 +74,7 @@ class S3Client:
         url = f"{self.config['endpoint_url']}/{self.bucket_name}/{key}"
         return url
 
-    async def get_private_url(self, key: str, expire: int = 3600) -> str:
+    async def get_private_url(self, key: str, expire: int) -> str:
         async with self.get_client() as client:
             url = await client.generate_presigned_url(
                 "get_object",
