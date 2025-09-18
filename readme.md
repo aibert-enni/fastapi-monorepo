@@ -114,12 +114,12 @@ python -m pytest
 ### Media test
 Up docker:
 ```bash
-cd auth_service/tests
+cd media_service/tests
 docker compose up
 ```
 Run tests:
 ```bash
-cd auth_service/tests
+cd media_service/tests
 python -m pytest
 ```
 
@@ -131,3 +131,4 @@ Media API doc: http://localhost:8002/docs
 User API doc: http://localhost:8003/docs
 
 RabbitMQ management UI: http://localhost:15672
+Minio management UI: http://localhost:9001/login 
