@@ -39,7 +39,7 @@ services:
         sleep 5 &&
         mc alias set local http://minio:9000 admin password &&
         mc mb -p local/uploads &&
-        mc anonymous set off local/uploads
+        mc mb -p local/test
       "
 
 volumes:
