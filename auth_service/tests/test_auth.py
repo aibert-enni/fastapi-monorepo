@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exceptions.custom_exceptions import (
     IntegrityError,
-    NotFoundError,
+    CredentialError,
 )
 from app.schemas.auth import AuthCreateS, AuthLoginS
 from app.services.auth_service import AuthService
@@ -40,7 +40,7 @@ async def test_create_user(auth_service: AuthService) -> None:
 async def test_login_user(auth_service: AuthService, db_session: AsyncSession) -> None:
     test_auth = await AuthFactory.create(session=db_session)
 
-    with pytest.raises(NotFoundError):
+    with pytest.raises(CredentialError):
         await auth_service.login_user(
             AuthLoginS(username="dasdasd", password="21312dsadas")
         )

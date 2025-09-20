@@ -3,11 +3,8 @@ from typing import Optional
 from sqlalchemy.exc import IntegrityError as SAIntegrityError
 
 from app.exceptions.custom_exceptions import (
-    AuthorizationError,
     CredentialError,
     IntegrityError,
-    NotFoundError,
-    ValidationError,
 )
 from app.repository import AuthRepository
 from app.schemas.auth import AuthCreateS, AuthLoginS, AuthS
@@ -38,16 +35,21 @@ class AuthService:
         try:
             user = await self.auth_repository.save(user_schema)
         except SAIntegrityError as e:
-            detail = str(e.orig)
-            print(e.orig)
-            if "username" in detail:
-                raise IntegrityError(
-                    "User with this username already exist",
-                )
-            elif "email" in detail:
-                raise IntegrityError(
-                    "User with this email already exist",
-                )
+            detail = ""
+    
+            # PostgreSQL specific handling
+            if hasattr(e.orig, 'pgcode') and e.orig.pgcode == '23505': # type: ignore
+                detail = getattr(e.orig, 'pgerror', '') or getattr(e.orig, 'diag', {}).get('message_detail', '') or str(e.orig)
+            else:
+                detail = str(e.orig)
+            
+            detail_lower = detail.lower()
+
+            # Check for specific constraint patterns
+            if any(pattern in detail_lower for pattern in ['username', 'users_username_key', 'uq_username']):
+                raise IntegrityError("Username already exists")
+            elif any(pattern in detail_lower for pattern in ['email', 'users_email_key', 'uq_email']):
+                raise IntegrityError("Email already exists")
             else:
                 raise IntegrityError("Unique constraint violation")
         await self.broker.publish_user_created(user.model_dump(mode="json"))
@@ -81,9 +83,6 @@ class AuthService:
             raise CredentialError
 
         user = await self.auth_repository.get_by_id(user_id)
-
-        if user and not user.is_active:
-            raise CredentialError(message="Account not activated")
 
         return user
 
