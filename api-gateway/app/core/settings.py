@@ -12,6 +12,7 @@ class DBSettings(BaseModel):
 class GRPCSettings(BaseModel):
     auth_url: str
     media_url: str
+    user_url: str
 
 class JwtSettings(BaseModel):
     PUBLIC_KEY_PATH: Path = BASE_DIR / "certs" / "jwt-public.pem"

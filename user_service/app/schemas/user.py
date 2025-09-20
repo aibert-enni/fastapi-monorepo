@@ -20,4 +20,5 @@ class UserUpdateS(UserBaseS):
 
 
 class UserS(UserBaseS):
-    id: Optional[UUID] = None
+    id: UUID
+

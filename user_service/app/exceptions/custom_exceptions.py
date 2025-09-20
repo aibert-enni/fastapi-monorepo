@@ -1,80 +1,95 @@
+from typing import Optional
+
 from fastapi import status
+from grpc import StatusCode
 
 
-class DatabaseError(Exception):
+class AppError(Exception):
+    http_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    grpc_code = StatusCode.INTERNAL
+    
     def __init__(
         self,
         message: str,
-        status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        error: str = "API Error",
+        http_code: Optional[int]= None,
+        grpc_code:  Optional[StatusCode] = None
     ):
         self.message = message
-        self.status_code = status_code
-        self.error = error
+        if http_code is not None:
+            self.http_code = http_code
+        if grpc_code is not None:
+            self.grpc_code = grpc_code
 
 
-class IntegrityError(DatabaseError):
-    def __init__(
-        self,
-        message,
-        status_code=status.HTTP_400_BAD_REQUEST,
-        error="Data Validation Error",
-    ):
-        super().__init__(message, status_code, error)
+class APIError(AppError):
+    pass
+
+class IntegrityError(APIError):
+    grpc_code = StatusCode.INVALID_ARGUMENT
+    http_code = status.HTTP_400_BAD_REQUEST
+
+    def __init__(self, message: str = "Data validation error"):
+        super().__init__(message)
 
 
-class NotFoundError(DatabaseError):
-    def __init__(
-        self,
-        message,
-        status_code=status.HTTP_404_NOT_FOUND,
-        error="Resource Not Found",
-    ):
-        super().__init__(message, status_code, error)
+class NotFoundError(APIError):
+    grpc_code = StatusCode.NOT_FOUND
+    http_code=status.HTTP_404_NOT_FOUND
 
-
-class APIError(Exception):
-    def __init__(self, message: str, status_code: int, error: str = "API Error"):
-        self.message = message
-        self.status_code = status_code
-        self.error = error
-
+    def __init__(self, message: str = "Resource not found"):
+        super().__init__(message)
 
 class CredentialError(APIError):
+    grpc_code = StatusCode.UNAUTHENTICATED
+    http_code = status.HTTP_401_UNAUTHORIZED
+
     def __init__(
         self,
         message: str = "Invalid credentials",
-        status_code: int = status.HTTP_401_UNAUTHORIZED,
-        error: str = "Credential Error",
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message)
 
 
 class AuthorizationError(APIError):
+    grpc_code = StatusCode.PERMISSION_DENIED
+    http_code = status.HTTP_403_FORBIDDEN
+
     def __init__(
         self,
-        message: str = "You don't have permission to access this resource.",
-        status_code: int = status.HTTP_403_FORBIDDEN,
-        error: str = "Authorization Error",
+        message: str = "You don't have permission to access this resource."
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message)
 
 
 class ValidationError(APIError):
-    def __init__(
-        self,
-        message: str,
-        status_code: int = status.HTTP_422_UNPROCESSABLE_ENTITY,
-        error: str = "Validation Error",
-    ):
-        super().__init__(message, status_code, error)
+    grpc_code = StatusCode.INVALID_ARGUMENT
+    http_code = status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 class ServiceUnavailableError(APIError):
+    grpc_code = StatusCode.UNAVAILABLE
+    http_code = status.HTTP_503_SERVICE_UNAVAILABLE
+
     def __init__(
         self,
         message: str = "Service unavailable",
-        status_code: int = status.HTTP_503_SERVICE_UNAVAILABLE,
-        error: str = "Service Unavailable Error",
     ):
-        super().__init__(message, status_code, error)
+        super().__init__(message)
+
+
+class UnsupportedMediaTypeError(APIError):
+    grpc_code = StatusCode.INVALID_ARGUMENT
+    http_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+
+    def __init__(
+        self,
+        message: str,
+    ):
+        super().__init__(message)
+
+class FileTooLargeError(APIError):
+    grpc_code=StatusCode.INVALID_ARGUMENT
+    http_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+
+    def __init__(self, message: str):
+        super().__init__(message)

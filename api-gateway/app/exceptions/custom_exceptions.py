@@ -1,17 +1,24 @@
+from typing import Optional
+
 from fastapi import status
 from grpc import StatusCode
 
 
 class AppError(Exception):
+    http_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    grpc_code = StatusCode.INTERNAL
+    
     def __init__(
         self,
         message: str,
-        http_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        grpc_code: StatusCode = StatusCode.INTERNAL
+        http_code: Optional[int]= None,
+        grpc_code:  Optional[StatusCode] = None
     ):
         self.message = message
-        self.http_code = http_code
-        self.grpc_code = grpc_code
+        if http_code is not None:
+            self.http_code = http_code
+        if grpc_code is not None:
+            self.grpc_code = grpc_code
 
 
 class APIError(AppError):
@@ -23,6 +30,7 @@ class IntegrityError(APIError):
 
     def __init__(self, message: str = "Data validation error"):
         super().__init__(message)
+
 
 class NotFoundError(APIError):
     grpc_code = StatusCode.NOT_FOUND
@@ -66,4 +74,22 @@ class ServiceUnavailableError(APIError):
         self,
         message: str = "Service unavailable",
     ):
+        super().__init__(message)
+
+
+class UnsupportedMediaTypeError(APIError):
+    grpc_code = StatusCode.INVALID_ARGUMENT
+    http_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+
+    def __init__(
+        self,
+        message: str,
+    ):
+        super().__init__(message)
+
+class FileTooLargeError(APIError):
+    grpc_code=StatusCode.INVALID_ARGUMENT
+    http_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+
+    def __init__(self, message: str):
         super().__init__(message)

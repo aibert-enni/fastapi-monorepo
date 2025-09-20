@@ -13,6 +13,8 @@ class DBSettings(BaseModel):
 class RabbitSettings(BaseModel):
     URL: str
 
+class GRPCSettings(BaseModel):
+    port: str
 
 class CommonSettings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -21,6 +23,6 @@ class CommonSettings(BaseSettings):
     )
     db: DBSettings
     rabbit: RabbitSettings
+    grpc: GRPCSettings
 
-
-settings = CommonSettings()
+settings = CommonSettings() # type: ignore

@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter
 
-from app.core.dependencies import UserServiceDep
+from api.dependencies.services import UserServiceDep
 from app.schemas.user import UserBaseS, UserS, UserUpdateS
 
 router = APIRouter(

@@ -12,4 +12,4 @@ class UserOrm(BaseOrm, UuidPkMixin, CreateAtMixin, UpdateAtMixin):
     last_name: Mapped[str] = mapped_column(String(64), nullable=True)
 
     def __repr__(self):
-        return f"<User(firstname={self.first_name}, lastname={self.last_name})>"
+        return f"<User(id={self.id}, firstname={self.first_name}, lastname={self.last_name})>"

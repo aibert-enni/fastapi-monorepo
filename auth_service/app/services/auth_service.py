@@ -39,6 +39,7 @@ class AuthService:
             user = await self.auth_repository.save(user_schema)
         except SAIntegrityError as e:
             detail = str(e.orig)
+            print(e.orig)
             if "username" in detail:
                 raise IntegrityError(
                     "User with this username already exist",
@@ -54,12 +55,10 @@ class AuthService:
 
     async def authenticate_user(self, schema: AuthLoginS) -> AuthS:
         user = await self.auth_repository.get_by_username(schema.username)
-        if user is None:
-            raise NotFoundError(message="User not found")
+        if user is None or not verify_password(schema.password, user.hashed_password):
+            raise CredentialError(message="Invalid credentials")
         if not user.is_active:
-            raise AuthorizationError(message="User is not active")
-        if not verify_password(schema.password, user.hashed_password):
-            raise ValidationError(message="Invalid password")
+            raise CredentialError(message="Account not activated")
         return user
 
     async def login_user(self, schema: AuthLoginS) -> JWT_TokenS:
@@ -82,6 +81,9 @@ class AuthService:
             raise CredentialError
 
         user = await self.auth_repository.get_by_id(user_id)
+
+        if user and not user.is_active:
+            raise CredentialError(message="Account not activated")
 
         return user
 
