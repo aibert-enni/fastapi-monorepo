@@ -39,6 +39,10 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 - **Pytest** – testing framework
 - **Minio** – aws object storage for media files
 
+### API
+<img width="1918" height="991" alt="Screenshot 2025-09-20 231516" src="https://github.com/user-attachments/assets/56d23a64-2a2b-4380-b3b5-37c1920d515b" />
+
+
 ## Running the Project
 
 Clone the repository:
