@@ -4,6 +4,7 @@ import grpc
 import warnings
 
 from proto import auth_pb2 as auth__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 GRPC_GENERATED_VERSION = '1.74.0'
 GRPC_VERSION = grpc.__version__
@@ -35,24 +36,29 @@ class AuthStub(object):
             channel: A grpc.Channel.
         """
         self.RegisterUser = channel.unary_unary(
-                '/Auth/RegisterUser',
+                '/auth.Auth/RegisterUser',
                 request_serializer=auth__pb2.AuthRegisterRequest.SerializeToString,
                 response_deserializer=auth__pb2.AuthRegisterResponse.FromString,
                 _registered_method=True)
         self.LoginUser = channel.unary_unary(
-                '/Auth/LoginUser',
+                '/auth.Auth/LoginUser',
                 request_serializer=auth__pb2.AuthLoginRequest.SerializeToString,
                 response_deserializer=auth__pb2.AuthLoginResponse.FromString,
                 _registered_method=True)
         self.RefreshAccessToken = channel.unary_unary(
-                '/Auth/RefreshAccessToken',
+                '/auth.Auth/RefreshAccessToken',
                 request_serializer=auth__pb2.RefreshAccessTokenRequest.SerializeToString,
                 response_deserializer=auth__pb2.RefreshAccessTokenResponse.FromString,
                 _registered_method=True)
         self.CurrentUser = channel.unary_unary(
-                '/Auth/CurrentUser',
+                '/auth.Auth/CurrentUser',
                 request_serializer=auth__pb2.CurrentUserRequest.SerializeToString,
                 response_deserializer=auth__pb2.CurrentUserResponse.FromString,
+                _registered_method=True)
+        self.HealthCheck = channel.unary_unary(
+                '/auth.Auth/HealthCheck',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=auth__pb2.HealthCheckResponse.FromString,
                 _registered_method=True)
 
 
@@ -83,6 +89,12 @@ class AuthServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def HealthCheck(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -106,11 +118,16 @@ def add_AuthServicer_to_server(servicer, server):
                     request_deserializer=auth__pb2.CurrentUserRequest.FromString,
                     response_serializer=auth__pb2.CurrentUserResponse.SerializeToString,
             ),
+            'HealthCheck': grpc.unary_unary_rpc_method_handler(
+                    servicer.HealthCheck,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=auth__pb2.HealthCheckResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'Auth', rpc_method_handlers)
+            'auth.Auth', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('Auth', rpc_method_handlers)
+    server.add_registered_method_handlers('auth.Auth', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -131,7 +148,7 @@ class Auth(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/Auth/RegisterUser',
+            '/auth.Auth/RegisterUser',
             auth__pb2.AuthRegisterRequest.SerializeToString,
             auth__pb2.AuthRegisterResponse.FromString,
             options,
@@ -158,7 +175,7 @@ class Auth(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/Auth/LoginUser',
+            '/auth.Auth/LoginUser',
             auth__pb2.AuthLoginRequest.SerializeToString,
             auth__pb2.AuthLoginResponse.FromString,
             options,
@@ -185,7 +202,7 @@ class Auth(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/Auth/RefreshAccessToken',
+            '/auth.Auth/RefreshAccessToken',
             auth__pb2.RefreshAccessTokenRequest.SerializeToString,
             auth__pb2.RefreshAccessTokenResponse.FromString,
             options,
@@ -212,9 +229,36 @@ class Auth(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/Auth/CurrentUser',
+            '/auth.Auth/CurrentUser',
             auth__pb2.CurrentUserRequest.SerializeToString,
             auth__pb2.CurrentUserResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def HealthCheck(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary( # type: ignore
+            request,
+            target,
+            '/auth.Auth/HealthCheck',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            auth__pb2.HealthCheckResponse.FromString,
             options,
             channel_credentials,
             insecure,

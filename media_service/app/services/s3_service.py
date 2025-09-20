@@ -118,6 +118,13 @@ class S3Client:
                 client.delete_object, Bucket=self.bucket_name, Key=key
             )
 
+    async def health_check(self) -> bool:
+        async with self.get_client() as client:
+            try:
+                await self._call(client.head_bucket, Bucket=self.bucket_name)
+                return True
+            except:
+                return False
 
 s3_client = S3Client(
     access_key=settings.s3.access_key,

@@ -22,23 +22,30 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nuser.proto\"m\n\x11\x43reateUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"n\n\x12\x43reateUserResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"m\n\x11UpdateUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"n\n\x12UpdateUserResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name2{\n\x0bUserService\x12\x35\n\nCreateUser\x12\x12.CreateUserRequest\x1a\x13.CreateUserResponse\x12\x35\n\nUpdateUser\x12\x12.UpdateUserRequest\x1a\x13.UpdateUserResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nuser.proto\x12\x04user\x1a\x1bgoogle/protobuf/empty.proto\"m\n\x11\x43reateUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"n\n\x12\x43reateUserResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"m\n\x11UpdateUserRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"n\n\x12UpdateUserResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x17\n\nfirst_name\x18\x02 \x01(\tH\x00\x88\x01\x01\x12\x16\n\tlast_name\x18\x03 \x01(\tH\x01\x88\x01\x01\x42\r\n\x0b_first_nameB\x0c\n\n_last_name\"\x8b\x01\n\x13HealthCheckResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x35\n\x06\x63hecks\x18\x02 \x03(\x0b\x32%.user.HealthCheckResponse.ChecksEntry\x1a-\n\x0b\x43hecksEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\xd1\x01\n\x0bUserService\x12?\n\nCreateUser\x12\x17.user.CreateUserRequest\x1a\x18.user.CreateUserResponse\x12?\n\nUpdateUser\x12\x17.user.UpdateUserRequest\x1a\x18.user.UpdateUserResponse\x12@\n\x0bHealthCheck\x12\x16.google.protobuf.Empty\x1a\x19.user.HealthCheckResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'user_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_CREATEUSERREQUEST']._serialized_start=14
-  _globals['_CREATEUSERREQUEST']._serialized_end=123
-  _globals['_CREATEUSERRESPONSE']._serialized_start=125
-  _globals['_CREATEUSERRESPONSE']._serialized_end=235
-  _globals['_UPDATEUSERREQUEST']._serialized_start=237
-  _globals['_UPDATEUSERREQUEST']._serialized_end=346
-  _globals['_UPDATEUSERRESPONSE']._serialized_start=348
-  _globals['_UPDATEUSERRESPONSE']._serialized_end=458
-  _globals['_USERSERVICE']._serialized_start=460
-  _globals['_USERSERVICE']._serialized_end=583
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._loaded_options = None
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._serialized_options = b'8\001'
+  _globals['_CREATEUSERREQUEST']._serialized_start=49
+  _globals['_CREATEUSERREQUEST']._serialized_end=158
+  _globals['_CREATEUSERRESPONSE']._serialized_start=160
+  _globals['_CREATEUSERRESPONSE']._serialized_end=270
+  _globals['_UPDATEUSERREQUEST']._serialized_start=272
+  _globals['_UPDATEUSERREQUEST']._serialized_end=381
+  _globals['_UPDATEUSERRESPONSE']._serialized_start=383
+  _globals['_UPDATEUSERRESPONSE']._serialized_end=493
+  _globals['_HEALTHCHECKRESPONSE']._serialized_start=496
+  _globals['_HEALTHCHECKRESPONSE']._serialized_end=635
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._serialized_start=590
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._serialized_end=635
+  _globals['_USERSERVICE']._serialized_start=638
+  _globals['_USERSERVICE']._serialized_end=847
 # @@protoc_insertion_point(module_scope)

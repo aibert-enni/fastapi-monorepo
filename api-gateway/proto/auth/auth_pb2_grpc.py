@@ -3,8 +3,8 @@
 import grpc
 import warnings
 
+from proto.auth import auth_pb2 as auth__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-from proto import media_pb2 as media__pb2
 
 GRPC_GENERATED_VERSION = '1.74.0'
 GRPC_VERSION = grpc.__version__
@@ -19,14 +19,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in media_pb2_grpc.py depends on'
+        + f' but the generated code in auth_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class MediaStub(object):
+class AuthStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -35,44 +35,55 @@ class MediaStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.UploadAvatar = channel.unary_unary(
-                '/media.Media/UploadAvatar',
-                request_serializer=media__pb2.UploadAvatarRequest.SerializeToString,
-                response_deserializer=media__pb2.UploadAvatarResponse.FromString,
+        self.RegisterUser = channel.unary_unary(
+                '/auth.Auth/RegisterUser',
+                request_serializer=auth__pb2.AuthRegisterRequest.SerializeToString,
+                response_deserializer=auth__pb2.AuthRegisterResponse.FromString,
                 _registered_method=True)
-        self.GetFileUrl = channel.unary_unary(
-                '/media.Media/GetFileUrl',
-                request_serializer=media__pb2.GetFileUrlRequest.SerializeToString,
-                response_deserializer=media__pb2.GetFileUrlResponse.FromString,
+        self.LoginUser = channel.unary_unary(
+                '/auth.Auth/LoginUser',
+                request_serializer=auth__pb2.AuthLoginRequest.SerializeToString,
+                response_deserializer=auth__pb2.AuthLoginResponse.FromString,
                 _registered_method=True)
-        self.DeleteFile = channel.unary_unary(
-                '/media.Media/DeleteFile',
-                request_serializer=media__pb2.DeleteFileRequest.SerializeToString,
-                response_deserializer=media__pb2.DeleteFileResponse.FromString,
+        self.RefreshAccessToken = channel.unary_unary(
+                '/auth.Auth/RefreshAccessToken',
+                request_serializer=auth__pb2.RefreshAccessTokenRequest.SerializeToString,
+                response_deserializer=auth__pb2.RefreshAccessTokenResponse.FromString,
+                _registered_method=True)
+        self.CurrentUser = channel.unary_unary(
+                '/auth.Auth/CurrentUser',
+                request_serializer=auth__pb2.CurrentUserRequest.SerializeToString,
+                response_deserializer=auth__pb2.CurrentUserResponse.FromString,
                 _registered_method=True)
         self.HealthCheck = channel.unary_unary(
-                '/media.Media/HealthCheck',
+                '/auth.Auth/HealthCheck',
                 request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-                response_deserializer=media__pb2.HealthCheckResponse.FromString,
+                response_deserializer=auth__pb2.HealthCheckResponse.FromString,
                 _registered_method=True)
 
 
-class MediaServicer(object):
+class AuthServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def UploadAvatar(self, request, context):
+    def RegisterUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetFileUrl(self, request, context):
+    def LoginUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DeleteFile(self, request, context):
+    def RefreshAccessToken(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CurrentUser(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -85,41 +96,46 @@ class MediaServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_MediaServicer_to_server(servicer, server):
+def add_AuthServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'UploadAvatar': grpc.unary_unary_rpc_method_handler(
-                    servicer.UploadAvatar,
-                    request_deserializer=media__pb2.UploadAvatarRequest.FromString,
-                    response_serializer=media__pb2.UploadAvatarResponse.SerializeToString,
+            'RegisterUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.RegisterUser,
+                    request_deserializer=auth__pb2.AuthRegisterRequest.FromString,
+                    response_serializer=auth__pb2.AuthRegisterResponse.SerializeToString,
             ),
-            'GetFileUrl': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetFileUrl,
-                    request_deserializer=media__pb2.GetFileUrlRequest.FromString,
-                    response_serializer=media__pb2.GetFileUrlResponse.SerializeToString,
+            'LoginUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.LoginUser,
+                    request_deserializer=auth__pb2.AuthLoginRequest.FromString,
+                    response_serializer=auth__pb2.AuthLoginResponse.SerializeToString,
             ),
-            'DeleteFile': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteFile,
-                    request_deserializer=media__pb2.DeleteFileRequest.FromString,
-                    response_serializer=media__pb2.DeleteFileResponse.SerializeToString,
+            'RefreshAccessToken': grpc.unary_unary_rpc_method_handler(
+                    servicer.RefreshAccessToken,
+                    request_deserializer=auth__pb2.RefreshAccessTokenRequest.FromString,
+                    response_serializer=auth__pb2.RefreshAccessTokenResponse.SerializeToString,
+            ),
+            'CurrentUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.CurrentUser,
+                    request_deserializer=auth__pb2.CurrentUserRequest.FromString,
+                    response_serializer=auth__pb2.CurrentUserResponse.SerializeToString,
             ),
             'HealthCheck': grpc.unary_unary_rpc_method_handler(
                     servicer.HealthCheck,
                     request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                    response_serializer=media__pb2.HealthCheckResponse.SerializeToString,
+                    response_serializer=auth__pb2.HealthCheckResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'media.Media', rpc_method_handlers)
+            'auth.Auth', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('media.Media', rpc_method_handlers)
+    server.add_registered_method_handlers('auth.Auth', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class Media(object):
+class Auth(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def UploadAvatar(request,
+    def RegisterUser(request,
             target,
             options=(),
             channel_credentials=None,
@@ -132,9 +148,9 @@ class Media(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/media.Media/UploadAvatar',
-            media__pb2.UploadAvatarRequest.SerializeToString,
-            media__pb2.UploadAvatarResponse.FromString,
+            '/auth.Auth/RegisterUser',
+            auth__pb2.AuthRegisterRequest.SerializeToString,
+            auth__pb2.AuthRegisterResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -146,7 +162,7 @@ class Media(object):
             _registered_method=True)
 
     @staticmethod
-    def GetFileUrl(request,
+    def LoginUser(request,
             target,
             options=(),
             channel_credentials=None,
@@ -159,9 +175,9 @@ class Media(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/media.Media/GetFileUrl',
-            media__pb2.GetFileUrlRequest.SerializeToString,
-            media__pb2.GetFileUrlResponse.FromString,
+            '/auth.Auth/LoginUser',
+            auth__pb2.AuthLoginRequest.SerializeToString,
+            auth__pb2.AuthLoginResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -173,7 +189,7 @@ class Media(object):
             _registered_method=True)
 
     @staticmethod
-    def DeleteFile(request,
+    def RefreshAccessToken(request,
             target,
             options=(),
             channel_credentials=None,
@@ -186,9 +202,36 @@ class Media(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/media.Media/DeleteFile',
-            media__pb2.DeleteFileRequest.SerializeToString,
-            media__pb2.DeleteFileResponse.FromString,
+            '/auth.Auth/RefreshAccessToken',
+            auth__pb2.RefreshAccessTokenRequest.SerializeToString,
+            auth__pb2.RefreshAccessTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CurrentUser(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary( # type: ignore
+            request,
+            target,
+            '/auth.Auth/CurrentUser',
+            auth__pb2.CurrentUserRequest.SerializeToString,
+            auth__pb2.CurrentUserResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -213,9 +256,9 @@ class Media(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/media.Media/HealthCheck',
+            '/auth.Auth/HealthCheck',
             google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            media__pb2.HealthCheckResponse.FromString,
+            auth__pb2.HealthCheckResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -3,11 +3,13 @@ import logging
 from concurrent import futures
 
 import grpc
+from app.services.health_service import HealthService
 from proto import auth_pb2, auth_pb2_grpc
 from rpc.dependencies.services import get_auth_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
 from app.core.settings import settings
+from app.core.db import session_maker
 from app.exceptions.custom_exceptions import CredentialError
 from app.schemas.auth import AuthCreateS, AuthLoginS
 from app.services.brokers.rabbit.main import rabbit_broker_service
@@ -22,7 +24,7 @@ logger = logging.getLogger(__name__)
 class AuthServicer(auth_pb2_grpc.AuthServicer):
     async def RegisterUser(self, request, context):
         async with get_auth_service() as auth_service:
-            auth = await auth_service.create_auth(AuthCreateS(username=request.username, email=request.email, password=request.password, is_active=False, is_superuser=False))
+            auth = await auth_service.create_auth(AuthCreateS(username=request.username, email=request.email, password=request.password, is_active=True, is_superuser=False))
         return auth_pb2.AuthRegisterResponse(id=str(auth.id), username=auth.username, email=auth.email)
     
     async def LoginUser(self, request, context):
@@ -42,6 +44,12 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
             raise CredentialError
         user_message = auth_pb2.User(**user.model_dump(mode="json", exclude={"hashed_password"}))
         return auth_pb2.CurrentUserResponse(user=user_message)
+    
+    async def HealthCheck(self, request, context):
+        async with session_maker() as db:
+            health_service = HealthService(db_session=db, broker_service=rabbit_broker_service)
+            health = await health_service.health_check()
+        return auth_pb2.HealthCheckResponse(status=health.status, checks=health.checks)
 
     
 

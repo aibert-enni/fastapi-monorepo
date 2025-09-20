@@ -3,6 +3,7 @@
 import grpc
 import warnings
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from proto.user import user_pb2 as user__pb2
 
 GRPC_GENERATED_VERSION = '1.74.0'
@@ -35,14 +36,19 @@ class UserServiceStub(object):
             channel: A grpc.Channel.
         """
         self.CreateUser = channel.unary_unary(
-                '/UserService/CreateUser',
+                '/user.UserService/CreateUser',
                 request_serializer=user__pb2.CreateUserRequest.SerializeToString,
                 response_deserializer=user__pb2.CreateUserResponse.FromString,
                 _registered_method=True)
         self.UpdateUser = channel.unary_unary(
-                '/UserService/UpdateUser',
+                '/user.UserService/UpdateUser',
                 request_serializer=user__pb2.UpdateUserRequest.SerializeToString,
                 response_deserializer=user__pb2.UpdateUserResponse.FromString,
+                _registered_method=True)
+        self.HealthCheck = channel.unary_unary(
+                '/user.UserService/HealthCheck',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=user__pb2.HealthCheckResponse.FromString,
                 _registered_method=True)
 
 
@@ -61,6 +67,12 @@ class UserServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def HealthCheck(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_UserServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -74,11 +86,16 @@ def add_UserServiceServicer_to_server(servicer, server):
                     request_deserializer=user__pb2.UpdateUserRequest.FromString,
                     response_serializer=user__pb2.UpdateUserResponse.SerializeToString,
             ),
+            'HealthCheck': grpc.unary_unary_rpc_method_handler(
+                    servicer.HealthCheck,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=user__pb2.HealthCheckResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'UserService', rpc_method_handlers)
+            'user.UserService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('UserService', rpc_method_handlers)
+    server.add_registered_method_handlers('user.UserService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -99,7 +116,7 @@ class UserService(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/UserService/CreateUser',
+            '/user.UserService/CreateUser',
             user__pb2.CreateUserRequest.SerializeToString,
             user__pb2.CreateUserResponse.FromString,
             options,
@@ -126,9 +143,36 @@ class UserService(object):
         return grpc.experimental.unary_unary( # type: ignore
             request,
             target,
-            '/UserService/UpdateUser',
+            '/user.UserService/UpdateUser',
             user__pb2.UpdateUserRequest.SerializeToString,
             user__pb2.UpdateUserResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def HealthCheck(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary( # type: ignore
+            request,
+            target,
+            '/user.UserService/HealthCheck',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            user__pb2.HealthCheckResponse.FromString,
             options,
             channel_credentials,
             insecure,

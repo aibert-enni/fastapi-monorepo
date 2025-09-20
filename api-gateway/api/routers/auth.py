@@ -1,13 +1,13 @@
 import logging
 
 import grpc
+
 from api.dependencies.current_user import GetCurrentUserDep
 from fastapi import APIRouter, Request, Response, status
 from proto.auth import auth_pb2, auth_pb2_grpc
-
 from app.core.settings import settings
 from app.exceptions.custom_exceptions import CredentialError
-from app.schemas.auth import (
+from api.schemas.auth import (
     AuthLoginRequestS,
     AuthLoginResponseS,
     AuthMeResponse,
@@ -68,9 +68,9 @@ async def refresh_access_token(request: Request) -> RefreshAccessTokenResponse:
     
     async with grpc.aio.insecure_channel(settings.grpc.auth_url) as channel:
         stub = auth_pb2_grpc.AuthStub(channel)
-        request = auth_pb2.RefreshAccessTokenRequest(payload=payload)
+        grpc_request = auth_pb2.RefreshAccessTokenRequest(payload=payload)
 
-        response = await stub.RefreshAccessToken(request)
+        response = await stub.RefreshAccessToken(grpc_request)
 
     return RefreshAccessTokenResponse(access_token=response.access_token)
 

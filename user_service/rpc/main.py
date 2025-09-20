@@ -5,13 +5,15 @@ from uuid import UUID
 
 import grpc
 
+from app.core.db import session_maker
 from app.exceptions.custom_exceptions import ValidationError
 from proto import user_pb2, user_pb2_grpc
 from rpc.dependencies.services import get_user_service
 from app.schemas.user import UserCreateS, UserUpdateS
 from rpc.interceptors.exception_handler import ErrorInterceptor
 from app.core.settings import settings
-from app.services.rabbit.main import broker
+from app.services.brokers.rabbit.main import rabbit_service
+from app.services.health_service import HealthService
 
 logging.basicConfig(
     level=logging.INFO,
@@ -41,8 +43,14 @@ class UserServer(user_pb2_grpc.UserServiceServicer):
             user = await user_service.update_user(UserUpdateS(id=id, first_name=request.first_name, last_name=request.last_name))
         return user_pb2.UpdateUserResponse(id=str(user.id), first_name=user.first_name, last_name=user.last_name)
     
+    async def HealthCheck(self, request, context):
+        async with session_maker() as db:
+            heatlth_service = HealthService(db_session=db, broker_service=rabbit_service)
+            health = await heatlth_service.health_check()
+        return user_pb2.HealthCheckResponse(status=health.status, checks=health.checks)
+    
 async def serve():
-    await broker.start()
+    await rabbit_service.start()
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[ErrorInterceptor()])
     user_pb2_grpc.add_UserServiceServicer_to_server(servicer=UserServer(), server=server)
     server.add_insecure_port(f"[::]:{settings.grpc.port}")
@@ -53,7 +61,7 @@ async def serve():
     except KeyboardInterrupt:
         await server.stop(grace=5)
     finally:
-        await broker.stop()
+        await rabbit_service.stop()
 
 if __name__ == "__main__":
     asyncio.run(serve())

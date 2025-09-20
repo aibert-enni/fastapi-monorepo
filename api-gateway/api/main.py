@@ -10,8 +10,3 @@ app = FastAPI(
 setup_exception_handlers(app)
 
 app.include_router(v1_router)
-
-
-@app.get("/health", tags=["service"])
-async def health():
-    return {"status": "ok"}

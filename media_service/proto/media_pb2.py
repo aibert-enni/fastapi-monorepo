@@ -4,14 +4,11 @@
 # source: media.proto
 # Protobuf Python Version: 6.31.1
 """Generated protocol buffer code."""
-from google.protobuf import (
-  descriptor as _descriptor,
-  descriptor_pool as _descriptor_pool,
-  runtime_version as _runtime_version,
-  symbol_database as _symbol_database,
-)
+from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
+from google.protobuf import runtime_version as _runtime_version
+from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
-
 _runtime_version.ValidateProtobufRuntimeVersion(
     _runtime_version.Domain.PUBLIC,
     6,
@@ -25,27 +22,34 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmedia.proto\"K\n\x13UploadAvatarRequest\x12\x10\n\x08owner_id\x18\x01 \x01(\t\x12\x0c\n\x04\x66ile\x18\x02 \x01(\x0c\x12\x14\n\x0c\x63ontent_type\x18\x03 \x01(\t\"/\n\x14UploadAvatarResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"\x1f\n\x11GetFileUrlRequest\x12\n\n\x02id\x18\x01 \x01(\t\"!\n\x12GetFileUrlResponse\x12\x0b\n\x03url\x18\x01 \x01(\t\"K\n\x11\x44\x65leteFileRequest\x12\x0f\n\x07\x66ile_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0cis_superuser\x18\x03 \x01(\x08\"$\n\x12\x44\x65leteFileResponse\x12\x0e\n\x06status\x18\x01 \x01(\t2\xb2\x01\n\x05Media\x12;\n\x0cUploadAvatar\x12\x14.UploadAvatarRequest\x1a\x15.UploadAvatarResponse\x12\x35\n\nGetFileUrl\x12\x12.GetFileUrlRequest\x1a\x13.GetFileUrlResponse\x12\x35\n\nDeleteFile\x12\x12.DeleteFileRequest\x1a\x13.DeleteFileResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmedia.proto\x12\x05media\x1a\x1bgoogle/protobuf/empty.proto\"K\n\x13UploadAvatarRequest\x12\x10\n\x08owner_id\x18\x01 \x01(\t\x12\x0c\n\x04\x66ile\x18\x02 \x01(\x0c\x12\x14\n\x0c\x63ontent_type\x18\x03 \x01(\t\"/\n\x14UploadAvatarResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"\x1f\n\x11GetFileUrlRequest\x12\n\n\x02id\x18\x01 \x01(\t\"!\n\x12GetFileUrlResponse\x12\x0b\n\x03url\x18\x01 \x01(\t\"K\n\x11\x44\x65leteFileRequest\x12\x0f\n\x07\x66ile_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0cis_superuser\x18\x03 \x01(\x08\"$\n\x12\x44\x65leteFileResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x8c\x01\n\x13HealthCheckResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x36\n\x06\x63hecks\x18\x02 \x03(\x0b\x32&.media.HealthCheckResponse.ChecksEntry\x1a-\n\x0b\x43hecksEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\x99\x02\n\x05Media\x12G\n\x0cUploadAvatar\x12\x1a.media.UploadAvatarRequest\x1a\x1b.media.UploadAvatarResponse\x12\x41\n\nGetFileUrl\x12\x18.media.GetFileUrlRequest\x1a\x19.media.GetFileUrlResponse\x12\x41\n\nDeleteFile\x12\x18.media.DeleteFileRequest\x1a\x19.media.DeleteFileResponse\x12\x41\n\x0bHealthCheck\x12\x16.google.protobuf.Empty\x1a\x1a.media.HealthCheckResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'media_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_UPLOADAVATARREQUEST']._serialized_start=15
-  _globals['_UPLOADAVATARREQUEST']._serialized_end=90
-  _globals['_UPLOADAVATARRESPONSE']._serialized_start=92
-  _globals['_UPLOADAVATARRESPONSE']._serialized_end=139
-  _globals['_GETFILEURLREQUEST']._serialized_start=141
-  _globals['_GETFILEURLREQUEST']._serialized_end=172
-  _globals['_GETFILEURLRESPONSE']._serialized_start=174
-  _globals['_GETFILEURLRESPONSE']._serialized_end=207
-  _globals['_DELETEFILEREQUEST']._serialized_start=209
-  _globals['_DELETEFILEREQUEST']._serialized_end=284
-  _globals['_DELETEFILERESPONSE']._serialized_start=286
-  _globals['_DELETEFILERESPONSE']._serialized_end=322
-  _globals['_MEDIA']._serialized_start=325
-  _globals['_MEDIA']._serialized_end=503
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._loaded_options = None
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._serialized_options = b'8\001'
+  _globals['_UPLOADAVATARREQUEST']._serialized_start=51
+  _globals['_UPLOADAVATARREQUEST']._serialized_end=126
+  _globals['_UPLOADAVATARRESPONSE']._serialized_start=128
+  _globals['_UPLOADAVATARRESPONSE']._serialized_end=175
+  _globals['_GETFILEURLREQUEST']._serialized_start=177
+  _globals['_GETFILEURLREQUEST']._serialized_end=208
+  _globals['_GETFILEURLRESPONSE']._serialized_start=210
+  _globals['_GETFILEURLRESPONSE']._serialized_end=243
+  _globals['_DELETEFILEREQUEST']._serialized_start=245
+  _globals['_DELETEFILEREQUEST']._serialized_end=320
+  _globals['_DELETEFILERESPONSE']._serialized_start=322
+  _globals['_DELETEFILERESPONSE']._serialized_end=358
+  _globals['_HEALTHCHECKRESPONSE']._serialized_start=361
+  _globals['_HEALTHCHECKRESPONSE']._serialized_end=501
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._serialized_start=456
+  _globals['_HEALTHCHECKRESPONSE_CHECKSENTRY']._serialized_end=501
+  _globals['_MEDIA']._serialized_start=504
+  _globals['_MEDIA']._serialized_end=785
 # @@protoc_insertion_point(module_scope)

@@ -3,8 +3,8 @@ import logging
 from faststream import Depends
 
 from app.schemas.user import UserCreateS, UserS
-from app.services.rabbit.dependencies import get_user_service
-from app.services.rabbit.main import broker
+from app.services.brokers.rabbit.dependencies import get_user_service
+from app.services.brokers.rabbit.main import broker
 from app.services.user_service import UserService
 
 logger = logging.getLogger(__name__)

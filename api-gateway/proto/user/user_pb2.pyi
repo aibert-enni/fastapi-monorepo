@@ -4,7 +4,9 @@ isort:skip_file
 """
 
 import builtins
+import collections.abc
 import google.protobuf.descriptor
+import google.protobuf.internal.containers
 import google.protobuf.message
 import typing
 
@@ -113,3 +115,38 @@ class UpdateUserResponse(google.protobuf.message.Message):
     def WhichOneof(self, oneof_group: typing.Literal["_last_name", b"_last_name"]) -> typing.Literal["last_name"] | None: ...
 
 global___UpdateUserResponse = UpdateUserResponse
+
+@typing.final
+class HealthCheckResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    @typing.final
+    class ChecksEntry(google.protobuf.message.Message):
+        DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+        KEY_FIELD_NUMBER: builtins.int
+        VALUE_FIELD_NUMBER: builtins.int
+        key: builtins.str
+        value: builtins.str
+        def __init__(
+            self,
+            *,
+            key: builtins.str = ...,
+            value: builtins.str = ...,
+        ) -> None: ...
+        def ClearField(self, field_name: typing.Literal["key", b"key", "value", b"value"]) -> None: ...
+
+    STATUS_FIELD_NUMBER: builtins.int
+    CHECKS_FIELD_NUMBER: builtins.int
+    status: builtins.str
+    @property
+    def checks(self) -> google.protobuf.internal.containers.ScalarMap[builtins.str, builtins.str]: ...
+    def __init__(
+        self,
+        *,
+        status: builtins.str = ...,
+        checks: collections.abc.Mapping[builtins.str, builtins.str] | None = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["checks", b"checks", "status", b"status"]) -> None: ...
+
+global___HealthCheckResponse = HealthCheckResponse

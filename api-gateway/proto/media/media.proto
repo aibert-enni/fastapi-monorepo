@@ -1,9 +1,14 @@
 syntax = "proto3";
 
+package media;
+
+import "google/protobuf/empty.proto";
+
 service Media {
     rpc UploadAvatar (UploadAvatarRequest) returns (UploadAvatarResponse);
     rpc GetFileUrl (GetFileUrlRequest) returns (GetFileUrlResponse);
     rpc DeleteFile (DeleteFileRequest) returns (DeleteFileResponse);
+    rpc HealthCheck (google.protobuf.Empty) returns (HealthCheckResponse);
 }
 
 message UploadAvatarRequest {
@@ -33,4 +38,9 @@ message DeleteFileRequest {
 
 message DeleteFileResponse {
     string status = 1;
+}
+
+message HealthCheckResponse {
+    string status = 1;
+    map<string, string> checks = 2;
 }

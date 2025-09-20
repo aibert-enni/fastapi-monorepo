@@ -1,9 +1,7 @@
 from typing import Optional
-from uuid import UUID
-
-from app.schemas.base import UUIDMixinS
+from pydantic import BaseModel
 
 
-class UserS(UUIDMixinS):
+class UserUpdateRequestS(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None

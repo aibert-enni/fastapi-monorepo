@@ -5,10 +5,13 @@ from concurrent import futures
 from uuid import UUID
 
 import grpc
+from app.services.health_service import HealthService
 from proto import media_pb2, media_pb2_grpc
 
 from app.core.settings import settings
+from app.core.db import session_maker
 from app.exceptions.custom_exceptions import ValidationError
+from app.services.s3_service import s3_client
 from rpc.dependencies.services import get_media_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
@@ -43,6 +46,12 @@ class AuthServicer(media_pb2_grpc.MediaServicer):
         async with get_media_service() as media_service:
             await media_service.delete_file(file_id=file_id, user_id=user_id, is_superuser=request.is_superuser)
         return media_pb2.DeleteFileResponse(status="success")
+    
+    async def HealthCheck(self, request, context):
+        async with session_maker() as db:
+            health_service = HealthService(db_session=db, s3_service=s3_client)
+            health = await health_service.health_check()
+        return media_pb2.HealthCheckResponse(status=health.status, checks=health.checks)
     
 
 async def serve():
