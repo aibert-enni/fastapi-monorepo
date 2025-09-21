@@ -4,11 +4,12 @@ from concurrent import futures
 
 import grpc
 from proto import auth_pb2, auth_pb2_grpc
-from rpc.dependencies.services import get_auth_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
 from app.core.db import session_maker
+from app.core.dependencies import get_auth_service
 from app.core.settings import settings
+from app.core.setup import setup
 from app.exceptions.custom_exceptions import CredentialError
 from app.schemas.auth import AuthCreateS, AuthLoginS
 from app.services.brokers.rabbit.main import rabbit_broker_service
@@ -55,6 +56,7 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
 
 async def serve():
     await rabbit_broker_service.start()
+    await setup()
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[ErrorInterceptor()])
     auth_pb2_grpc.add_AuthServicer_to_server(servicer=AuthServicer(), server=server)
     server.add_insecure_port(f"[::]:{settings.grpc.port}")

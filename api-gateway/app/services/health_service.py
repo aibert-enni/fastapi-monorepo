@@ -5,7 +5,7 @@ from proto.media import media_pb2_grpc
 from proto.user import user_pb2_grpc
 
 from app.core.settings import settings
-from app.schemas.health import HealthCheckServiceS, HealthCheckServicesS, HealthCheckS
+from app.schemas.health import HealthCheckS, HealthCheckServiceS, HealthCheckServicesS
 
 
 class HealthService:
@@ -19,7 +19,7 @@ class HealthService:
                 response = await stub.HealthCheck(empty_pb2.Empty())
             status = response.status
             checks = response.checks
-        except grpc.RpcError as e:
+        except grpc.RpcError:
             status = "DOWN"
             checks = {}
 
@@ -34,7 +34,7 @@ class HealthService:
                 response = await stub.HealthCheck(empty_pb2.Empty())
             status = response.status
             checks = response.checks
-        except grpc.RpcError as e:
+        except grpc.RpcError:
             status = "DOWN"
             checks = {}
 
@@ -49,7 +49,7 @@ class HealthService:
                 response = await stub.HealthCheck(empty_pb2.Empty())
             status = response.status
             checks = response.checks
-        except grpc.RpcError as e:
+        except grpc.RpcError:
             status = "DOWN"
             checks = {}
 

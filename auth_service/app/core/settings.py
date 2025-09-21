@@ -1,3 +1,5 @@
+import json
+import logging
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -5,6 +7,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent.parent
 
+logger = logging.getLogger(__name__)
+
+class AdminSettings(BaseModel):
+    USERNAME: str
+    EMAIL: str
+    PASSWORD: str
 
 class DBSettings(BaseModel):
     URL: str
@@ -29,6 +37,7 @@ class CommonSettings(BaseSettings):
         env_file=str(BASE_DIR / ".env"),
         env_nested_delimiter="__",
     )
+    admin: AdminSettings
     db: DBSettings
     rabbit: RabbitSettings
     jwt: JwtSettings = JwtSettings()
@@ -36,3 +45,6 @@ class CommonSettings(BaseSettings):
 
 
 settings = CommonSettings() # type: ignore
+
+def print_settings():
+    logger.info(json.dumps(settings.model_dump(), indent=2, default=str))
