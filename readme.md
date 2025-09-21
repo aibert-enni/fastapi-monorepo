@@ -8,6 +8,7 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 ### API Gateway
 - Gateway between frontend and backend
 - The communication between services is done via gRPC
+- Admin endpoints
 
 ### User Service
 - Manages user data (registration, profile, etc.).
@@ -51,33 +52,19 @@ Clone the repository:
 git clone https://github.com/aibert-enni/fastapi-monorepo.git
 ```
 
-Start infrastructure (RabbitMQ, databases):
-
+Create internal network for docker containers:
 ```bash
-docker compose up -d
-```
-
-Start services:
-
-API Gateway:
-```bash
-cd api_gateway
-poetry run uvicorn api.main:app
-```
-
-Start auth grpc service:
-```bash
-cd auth_service
-poetry run py -m rpc.main
+docker network create internal_network
 ```
 
 Start services via Docker:
 
-Start user service:
+Start infrastructure (RabbitMQ):
+
 ```bash
-cd user_service
 docker compose up -d
 ```
+
 
 Start auth service:
 ```bash
@@ -85,9 +72,21 @@ cd auth_service
 docker compose up -d
 ```
 
+Start user service:
+```bash
+cd user_service
+docker compose up -d
+```
+
 Start media service:
 ```bash
 cd media_service
+docker compose up -d
+```
+
+Start api gateway:
+```bash
+cd api-gateway
 docker compose up -d
 ```
 
@@ -129,10 +128,6 @@ python -m pytest
 
 ## Documentation
 API Gateway doc: http://localhost:8000/docs
-
-Auth API doc: http://localhost:8001/docs
-Media API doc: http://localhost:8002/docs
-User API doc: http://localhost:8003/docs
 
 RabbitMQ management UI: http://localhost:15672
 Minio management UI: http://localhost:9001/login 

@@ -7,18 +7,10 @@ services:
       - .env.docker
     ports:
       - "8000:8000"
-    depends_on: [postgres]
-    command: sh -c "python -m alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
-  postgres:
-    image: postgres:13-alpine
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: user_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    command: sh -c "uvicorn api.main:app --host 0.0.0.0 --port 8000"
+    networks:
+      - internal_network
 
-volumes:
-  postgres_data:
+networks:
+  internal_network:
+    external: true

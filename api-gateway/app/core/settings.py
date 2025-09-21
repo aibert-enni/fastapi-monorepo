@@ -1,3 +1,5 @@
+import json
+import logging
 from pathlib import Path
 
 from pydantic import BaseModel
@@ -5,9 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent.parent
 
-
-class DBSettings(BaseModel):
-    URL: str
+logger = logging.getLogger("fastapi")
 
 class GRPCSettings(BaseModel):
     auth_url: str
@@ -24,9 +24,11 @@ class CommonSettings(BaseSettings):
         env_nested_delimiter="__",
     )
     jwt: JwtSettings = JwtSettings()
-    db: DBSettings
     grpc: GRPCSettings
     
 
  
 settings = CommonSettings() # type: ignore
+
+def log_settings():
+    logger.info(json.dumps(settings.model_dump(), indent=2, default=str))

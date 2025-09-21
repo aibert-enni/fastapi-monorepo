@@ -1,19 +1,18 @@
-"""init file, users_files_access tables
+"""init
 
-Revision ID: 6961308b3801
+Revision ID: e37c7de01246
 Revises: 
-Create Date: 2025-09-17 15:27:20.274210
+Create Date: 2025-09-22 02:46:30.316951
 
 """
 from typing import Sequence, Union
 
+from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
-from alembic import op
-
 # revision identifiers, used by Alembic.
-revision: str = '6961308b3801'
+revision: str = 'e37c7de01246'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -29,6 +28,7 @@ def upgrade() -> None:
     sa.Column('size', sa.BigInteger(), nullable=False),
     sa.Column('url', sa.Text(), nullable=True),
     sa.Column('key', sa.Text(), nullable=True),
+    sa.Column('expire', sa.DateTime(timezone=True), nullable=True),
     sa.Column('is_private', sa.Boolean(), server_default='false', nullable=False),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
