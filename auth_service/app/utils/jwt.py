@@ -4,6 +4,7 @@ from enum import Enum
 import jwt
 
 from app.core.settings import settings
+from app.exceptions.custom_exceptions import CredentialError
 
 TOKEN_TYPE_FIELD = "type"
 
@@ -69,3 +70,13 @@ def create_refresh_token(payload: dict) -> str:
         payload=payload,
         expires_delta=timedelta(days=settings.jwt.REFRESH_TOKEN_EXPIRE_DAYS),
     )
+
+def is_superuser(token: str, raise_error: bool = False) -> bool:
+    try:
+        payload = decode_jwt(token)
+    except Exception:
+        raise CredentialError
+    if raise_error:
+        if not payload.get("is_superuser", False):
+            raise CredentialError
+    return payload.get("is_superuser", False)

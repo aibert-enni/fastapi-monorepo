@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from .admin.router import router as admin_router
 from .auth import router as auth_router
 from .health import router as health_router
 from .media import router as media_router
@@ -11,3 +12,4 @@ router.include_router(auth_router)
 router.include_router(media_router)
 router.include_router(user_router)
 router.include_router(health_router)
+router.include_router(admin_router)

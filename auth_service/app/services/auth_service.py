@@ -1,13 +1,22 @@
 from typing import Optional
+from uuid import UUID
 
 from sqlalchemy.exc import IntegrityError as SAIntegrityError
 
 from app.exceptions.custom_exceptions import (
+    BadRequestError,
     CredentialError,
     IntegrityError,
+    NotFoundError,
 )
 from app.repository import AuthRepository
-from app.schemas.auth import AuthCreateS, AuthLoginS, AuthS
+from app.schemas.auth import (
+    AuthCreateS,
+    AuthLoginS,
+    AuthS,
+    AuthUpdateRepositoryS,
+    AuthUpdateS,
+)
 from app.schemas.jwt_token import JWT_TokenS
 from app.services.brokers.base import BaseBrokerService
 from app.utils.jwt import (
@@ -15,6 +24,8 @@ from app.utils.jwt import (
     TokenType,
     create_access_token,
     create_refresh_token,
+    decode_jwt,
+    is_superuser,
 )
 from app.utils.password import hash_password, verify_password
 
@@ -26,6 +37,25 @@ class AuthService:
 
     def _get_jwt_dict(self, user: AuthS) -> dict:
         return {"sub": str(user.id), "username": user.username, "email": user.email, "is_active": user.is_active, "is_superuser": user.is_superuser}
+    
+    def _handle_integrity_error(self, exception: SAIntegrityError) -> None:
+        detail = ""
+        # PostgreSQL specific handling
+        if hasattr(exception.orig, 'pgcode') and exception.orig.pgcode == '23505': # type: ignore
+            detail = getattr(exception.orig, 'pgerror', '') or getattr(exception.orig, 'diag', {}).get('message_detail', '') or str(exception.orig)
+        else:
+            detail = str(exception.orig)
+        
+        detail_lower = detail.lower()
+
+        # Check for specific constraint patterns
+        if any(pattern in detail_lower for pattern in ['username', 'users_username_key', 'uq_username']):
+            raise IntegrityError("Username already exists")
+        elif any(pattern in detail_lower for pattern in ['email', 'users_email_key', 'uq_email']):
+            raise IntegrityError("Email already exists")
+        else:
+            raise IntegrityError("Unique constraint violation")
+            
 
     async def create_auth(self, schema: AuthCreateS) -> AuthS:
         hashed_password = hash_password(schema.password)
@@ -34,26 +64,59 @@ class AuthService:
         )
         try:
             user = await self.auth_repository.save(user_schema)
+            await self.auth_repository.session.commit()
         except SAIntegrityError as e:
-            detail = ""
-    
-            # PostgreSQL specific handling
-            if hasattr(e.orig, 'pgcode') and e.orig.pgcode == '23505': # type: ignore
-                detail = getattr(e.orig, 'pgerror', '') or getattr(e.orig, 'diag', {}).get('message_detail', '') or str(e.orig)
-            else:
-                detail = str(e.orig)
-            
-            detail_lower = detail.lower()
-
-            # Check for specific constraint patterns
-            if any(pattern in detail_lower for pattern in ['username', 'users_username_key', 'uq_username']):
-                raise IntegrityError("Username already exists")
-            elif any(pattern in detail_lower for pattern in ['email', 'users_email_key', 'uq_email']):
-                raise IntegrityError("Email already exists")
-            else:
-                raise IntegrityError("Unique constraint violation")
+            await self.auth_repository.session.rollback()
+            self._handle_integrity_error(e)
         await self.broker.publish_user_created(user.model_dump(mode="json"))
         return user
+    
+    async def update_auth(self, user_id: UUID, schema: AuthUpdateS) -> AuthS:
+        if schema.password is not None:
+            hashed_password = hash_password(schema.password)
+        update_schema = AuthUpdateRepositoryS(**schema.model_dump(exclude={"password"}), id=user_id, hashed_password=hashed_password)
+        try:
+            user = await self.auth_repository.update(update_schema)
+            await self.auth_repository.session.commit()
+        except SAIntegrityError as e:
+            await self.auth_repository.session.rollback()
+            self._handle_integrity_error(e)
+        if user is None:
+            raise NotFoundError("User not found")
+        return user
+    
+    async def get_all_auths(self) -> list[AuthS]:
+        return await self.auth_repository.get_all()
+    
+    async def delete_auth(self, user_id: UUID) -> None:
+        db_user = await self.auth_repository.delete(user_id)
+        if db_user is None:
+            raise NotFoundError("User not found")
+
+    async def create_auth_by_admin(self, access_token: str, schema: AuthCreateS) -> AuthS:
+        is_superuser(access_token, raise_error=True)
+        return await self.create_auth(schema)
+    
+    async def update_auth_by_admin(self, access_token: str, user_id: UUID, schema: AuthUpdateS) -> AuthS:
+        is_superuser(access_token, raise_error=True)
+        payload = decode_jwt(access_token)
+        if payload.get("sub") == str(user_id):
+            if schema.is_active == False: # noqa: E712
+                raise BadRequestError(message="You cannot set yourself inactive")
+            if schema.is_superuser == False: # noqa: E712
+                raise BadRequestError(message="You cannot remove your admin privileges")
+        return await self.update_auth(user_id, schema)
+    
+    async def delete_auth_by_admin(self, access_token: str, user_id: UUID) -> None:
+        is_superuser(access_token, raise_error=True)
+        payload = decode_jwt(access_token)
+        if payload.get("sub") == str(user_id):
+            raise BadRequestError(message="You cannot delete yourself")
+        await self.auth_repository.delete(user_id)
+
+    async def get_all_auths_by_admin(self, access_token: str) -> list[AuthS]:
+        is_superuser(access_token, raise_error=True)
+        return await self.get_all_auths()
 
     async def authenticate_user(self, schema: AuthLoginS) -> AuthS:
         user = await self.auth_repository.get_by_username(schema.username)

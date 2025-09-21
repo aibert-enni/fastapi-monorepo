@@ -1,11 +1,13 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from typing import Optional
+
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 from .base import UUIDMixinS
 
 
 class AuthBaseS(BaseModel):
-    username: str
-    email: EmailStr
+    username: str = Field(..., min_length=1)
+    email: EmailStr = Field(..., min_length=1)
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -16,16 +18,16 @@ class AuthPermissionMixinS(BaseModel):
 
 
 class AuthRegisterS(AuthBaseS):
-    password: str
+    password: str = Field(..., min_length=1)
 
 
 class AuthLoginS(BaseModel):
-    username: str
-    password: str
+    username: str = Field(..., min_length=1)
+    password: str = Field(..., min_length=1)
 
 
 class AuthCreateS(AuthBaseS, AuthPermissionMixinS):
-    password: str
+    password: str = Field(..., min_length=1)
 
 
 class AuthRegisterResponseS(AuthBaseS, UUIDMixinS):
@@ -33,4 +35,18 @@ class AuthRegisterResponseS(AuthBaseS, UUIDMixinS):
 
 
 class AuthS(AuthBaseS, AuthPermissionMixinS, UUIDMixinS):
-    hashed_password: str
+    hashed_password: str = Field(..., min_length=1)
+
+class AuthUpdateS(BaseModel):
+    username: Optional[str] = Field(min_length=1, default=None)
+    email: Optional[EmailStr] = Field(min_length=1, default=None)
+    password: Optional[str] = Field(min_length=1, default=None)
+    is_active: Optional[bool] = None
+    is_superuser: Optional[bool] = None
+
+class AuthUpdateRepositoryS(UUIDMixinS):
+    username: Optional[str] = Field(min_length=1, default=None)
+    email: Optional[EmailStr] = Field(min_length=1, default=None)
+    hashed_password: Optional[str] = Field(min_length=1, default=None)
+    is_active: Optional[bool] = None
+    is_superuser: Optional[bool] = None

@@ -10,6 +10,10 @@ service Auth {
     rpc RefreshAccessToken (RefreshAccessTokenRequest) returns (RefreshAccessTokenResponse);
     rpc CurrentUser (CurrentUserRequest) returns (CurrentUserResponse);
     rpc HealthCheck (google.protobuf.Empty) returns (HealthCheckResponse);
+    rpc CreateUserByAdmin (CreateUserByAdminRequest) returns (CreateUserByAdminResponse);
+    rpc UpdateUserByAdmin (UpdateUserByAdminRequest) returns (UpdateUserByAdminResponse);
+    rpc DeleteUserByAdmin (DeleteUserByAdminRequest) returns (DeleteUserByAdminResponse);
+    rpc GetAllUsersByAdmin (GetAllUsersByAdminRequest) returns (GetAllUsersByAdminResponse);
 }
 
 message AuthRegisterRequest {
@@ -61,4 +65,57 @@ message CurrentUserResponse {
 message HealthCheckResponse {
     string status = 1;
     map<string, string> checks = 2;
+}
+
+message CreateUserByAdminRequest {
+    string access_token = 1;
+    string username = 2;
+    string email = 3;
+    string password = 4;
+    bool is_active = 5;
+    bool is_superuser = 6;
+}
+
+message CreateUserByAdminResponse {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    bool is_active = 4;
+    bool is_superuser = 5;
+}
+
+message UpdateUserByAdminRequest {
+    string access_token = 1;
+    string id = 2;
+    optional string username = 3;
+    optional string email = 4;
+    optional string password = 5;
+    optional bool is_active = 6;
+    optional bool is_superuser = 7;
+}
+
+message UpdateUserByAdminResponse {
+    string id = 1;
+    string username = 2;
+    string email = 3;
+    bool is_active = 4;
+    bool is_superuser = 5;
+}
+
+message DeleteUserByAdminRequest {
+    string access_token = 1;
+    string id = 2;
+}
+
+message DeleteUserByAdminResponse {
+    string id = 1;
+    bool is_deleted = 2;
+}
+
+message GetAllUsersByAdminRequest {
+    string access_token = 1;
+}
+
+message GetAllUsersByAdminResponse {
+    repeated User users = 1;
 }

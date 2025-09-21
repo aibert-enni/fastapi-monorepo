@@ -57,6 +57,7 @@ async def get_current_superuser(
         raise AuthorizationError
     return current_user
 
+GetHttpBearerDep = Annotated[HTTPAuthorizationCredentials, Depends(http_bearer)]
 
 GetCurrentUserDep = Annotated[AuthS, Depends(get_current_user)]
 

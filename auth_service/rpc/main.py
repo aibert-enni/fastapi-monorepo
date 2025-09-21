@@ -11,7 +11,7 @@ from app.core.dependencies import get_auth_service
 from app.core.settings import settings
 from app.core.setup import setup
 from app.exceptions.custom_exceptions import CredentialError
-from app.schemas.auth import AuthCreateS, AuthLoginS
+from app.schemas.auth import AuthCreateS, AuthLoginS, AuthUpdateS
 from app.services.brokers.rabbit.main import rabbit_broker_service
 from app.services.health_service import HealthService
 
@@ -51,8 +51,27 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
             health_service = HealthService(db_session=db, broker_service=rabbit_broker_service)
             health = await health_service.health_check()
         return auth_pb2.HealthCheckResponse(status=health.status, checks=health.checks)
-
     
+    async def CreateUserByAdmin(self, request, context):
+        async with get_auth_service() as auth_service:
+            user = await auth_service.create_auth_by_admin(access_token=request.access_token, schema=AuthCreateS(username=request.username, email=request.email, password=request.password, is_active=request.is_active, is_superuser=request.is_superuser))
+        return auth_pb2.CreateUserByAdminResponse(id=str(user.id), username=user.username, email=user.email, is_active=user.is_active, is_superuser=user.is_superuser)
+    
+    async def UpdateUserByAdmin(self, request, context):
+        async with get_auth_service() as auth_service:
+            user = await auth_service.update_auth_by_admin(access_token=request.access_token, user_id=request.id, schema=AuthUpdateS(username=request.username, email=request.email, password=request.password, is_active=request.is_active, is_superuser=request.is_superuser))
+        return auth_pb2.UpdateUserByAdminResponse(id=str(user.id), username=user.username, email=user.email, is_active=user.is_active, is_superuser=user.is_superuser)
+    
+    async def DeleteUserByAdmin(self, request, context):
+        async with get_auth_service() as auth_service:
+            await auth_service.delete_auth_by_admin(access_token=request.access_token, user_id=request.id)
+        return auth_pb2.DeleteUserByAdminResponse(id=request.id, is_deleted=True)
+    
+    async def GetAllUsersByAdmin(self, request, context):
+        async with get_auth_service() as auth_service:
+            users = await auth_service.get_all_auths_by_admin(access_token=request.access_token)
+        users = [auth_pb2.User(**user.model_dump(mode="json", exclude={"hashed_password"})) for user in users]
+        return auth_pb2.GetAllUsersByAdminResponse(users=users)
 
 async def serve():
     await rabbit_broker_service.start()

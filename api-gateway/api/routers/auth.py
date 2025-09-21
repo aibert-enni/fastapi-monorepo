@@ -36,7 +36,7 @@ async def user_register(schema: AuthRegisterRequestS) -> AuthRegisterResponseS:
     
     return AuthRegisterResponseS(id=response.id, username=response.username)
 
-@router.post("/login")
+@router.post("/login", description="Login and get access token, put access token to bearer header. Refresh token stored in http only cookie")
 async def user_login(schema: AuthLoginRequestS, response: Response) -> AuthLoginResponseS:
     async with grpc.aio.insecure_channel(settings.grpc.auth_url) as channel:
         stub = auth_pb2_grpc.AuthStub(channel)
@@ -54,7 +54,7 @@ async def user_login(schema: AuthLoginRequestS, response: Response) -> AuthLogin
 
     return AuthLoginResponseS(access_token=rpc_response.access_token)
 
-@router.post("/refresh")
+@router.post("/refresh", summary="Refresh access token", description="Get access token by refresh token from cookie")
 async def refresh_access_token(request: Request) -> RefreshAccessTokenResponse:
     refresh_token = request.cookies.get("refresh_token")
 

@@ -7,12 +7,12 @@ import grpc
 from proto import user_pb2, user_pb2_grpc
 
 from app.core.db import session_maker
+from app.core.dependencies import get_user_service
 from app.core.settings import settings
 from app.exceptions.custom_exceptions import ValidationError
 from app.schemas.user import UserCreateS, UserUpdateS
 from app.services.brokers.rabbit.main import rabbit_service
 from app.services.health_service import HealthService
-from app.core.dependencies import get_user_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
 logging.basicConfig(

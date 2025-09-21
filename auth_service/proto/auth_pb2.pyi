@@ -247,3 +247,198 @@ class HealthCheckResponse(google.protobuf.message.Message):
     def ClearField(self, field_name: typing.Literal["checks", b"checks", "status", b"status"]) -> None: ...
 
 global___HealthCheckResponse = HealthCheckResponse
+
+@typing.final
+class CreateUserByAdminRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ACCESS_TOKEN_FIELD_NUMBER: builtins.int
+    USERNAME_FIELD_NUMBER: builtins.int
+    EMAIL_FIELD_NUMBER: builtins.int
+    PASSWORD_FIELD_NUMBER: builtins.int
+    IS_ACTIVE_FIELD_NUMBER: builtins.int
+    IS_SUPERUSER_FIELD_NUMBER: builtins.int
+    access_token: builtins.str
+    username: builtins.str
+    email: builtins.str
+    password: builtins.str
+    is_active: builtins.bool
+    is_superuser: builtins.bool
+    def __init__(
+        self,
+        *,
+        access_token: builtins.str = ...,
+        username: builtins.str = ...,
+        email: builtins.str = ...,
+        password: builtins.str = ...,
+        is_active: builtins.bool = ...,
+        is_superuser: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["access_token", b"access_token", "email", b"email", "is_active", b"is_active", "is_superuser", b"is_superuser", "password", b"password", "username", b"username"]) -> None: ...
+
+global___CreateUserByAdminRequest = CreateUserByAdminRequest
+
+@typing.final
+class CreateUserByAdminResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ID_FIELD_NUMBER: builtins.int
+    USERNAME_FIELD_NUMBER: builtins.int
+    EMAIL_FIELD_NUMBER: builtins.int
+    IS_ACTIVE_FIELD_NUMBER: builtins.int
+    IS_SUPERUSER_FIELD_NUMBER: builtins.int
+    id: builtins.str
+    username: builtins.str
+    email: builtins.str
+    is_active: builtins.bool
+    is_superuser: builtins.bool
+    def __init__(
+        self,
+        *,
+        id: builtins.str = ...,
+        username: builtins.str = ...,
+        email: builtins.str = ...,
+        is_active: builtins.bool = ...,
+        is_superuser: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["email", b"email", "id", b"id", "is_active", b"is_active", "is_superuser", b"is_superuser", "username", b"username"]) -> None: ...
+
+global___CreateUserByAdminResponse = CreateUserByAdminResponse
+
+@typing.final
+class UpdateUserByAdminRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ACCESS_TOKEN_FIELD_NUMBER: builtins.int
+    ID_FIELD_NUMBER: builtins.int
+    USERNAME_FIELD_NUMBER: builtins.int
+    EMAIL_FIELD_NUMBER: builtins.int
+    PASSWORD_FIELD_NUMBER: builtins.int
+    IS_ACTIVE_FIELD_NUMBER: builtins.int
+    IS_SUPERUSER_FIELD_NUMBER: builtins.int
+    access_token: builtins.str
+    id: builtins.str
+    username: builtins.str
+    email: builtins.str
+    password: builtins.str
+    is_active: builtins.bool
+    is_superuser: builtins.bool
+    def __init__(
+        self,
+        *,
+        access_token: builtins.str = ...,
+        id: builtins.str = ...,
+        username: builtins.str | None = ...,
+        email: builtins.str | None = ...,
+        password: builtins.str | None = ...,
+        is_active: builtins.bool | None = ...,
+        is_superuser: builtins.bool | None = ...,
+    ) -> None: ...
+    def HasField(self, field_name: typing.Literal["_email", b"_email", "_is_active", b"_is_active", "_is_superuser", b"_is_superuser", "_password", b"_password", "_username", b"_username", "email", b"email", "is_active", b"is_active", "is_superuser", b"is_superuser", "password", b"password", "username", b"username"]) -> builtins.bool: ...
+    def ClearField(self, field_name: typing.Literal["_email", b"_email", "_is_active", b"_is_active", "_is_superuser", b"_is_superuser", "_password", b"_password", "_username", b"_username", "access_token", b"access_token", "email", b"email", "id", b"id", "is_active", b"is_active", "is_superuser", b"is_superuser", "password", b"password", "username", b"username"]) -> None: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing.Literal["_email", b"_email"]) -> typing.Literal["email"] | None: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing.Literal["_is_active", b"_is_active"]) -> typing.Literal["is_active"] | None: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing.Literal["_is_superuser", b"_is_superuser"]) -> typing.Literal["is_superuser"] | None: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing.Literal["_password", b"_password"]) -> typing.Literal["password"] | None: ...
+    @typing.overload
+    def WhichOneof(self, oneof_group: typing.Literal["_username", b"_username"]) -> typing.Literal["username"] | None: ...
+
+global___UpdateUserByAdminRequest = UpdateUserByAdminRequest
+
+@typing.final
+class UpdateUserByAdminResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ID_FIELD_NUMBER: builtins.int
+    USERNAME_FIELD_NUMBER: builtins.int
+    EMAIL_FIELD_NUMBER: builtins.int
+    IS_ACTIVE_FIELD_NUMBER: builtins.int
+    IS_SUPERUSER_FIELD_NUMBER: builtins.int
+    id: builtins.str
+    username: builtins.str
+    email: builtins.str
+    is_active: builtins.bool
+    is_superuser: builtins.bool
+    def __init__(
+        self,
+        *,
+        id: builtins.str = ...,
+        username: builtins.str = ...,
+        email: builtins.str = ...,
+        is_active: builtins.bool = ...,
+        is_superuser: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["email", b"email", "id", b"id", "is_active", b"is_active", "is_superuser", b"is_superuser", "username", b"username"]) -> None: ...
+
+global___UpdateUserByAdminResponse = UpdateUserByAdminResponse
+
+@typing.final
+class DeleteUserByAdminRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ACCESS_TOKEN_FIELD_NUMBER: builtins.int
+    ID_FIELD_NUMBER: builtins.int
+    access_token: builtins.str
+    id: builtins.str
+    def __init__(
+        self,
+        *,
+        access_token: builtins.str = ...,
+        id: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["access_token", b"access_token", "id", b"id"]) -> None: ...
+
+global___DeleteUserByAdminRequest = DeleteUserByAdminRequest
+
+@typing.final
+class DeleteUserByAdminResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ID_FIELD_NUMBER: builtins.int
+    IS_DELETED_FIELD_NUMBER: builtins.int
+    id: builtins.str
+    is_deleted: builtins.bool
+    def __init__(
+        self,
+        *,
+        id: builtins.str = ...,
+        is_deleted: builtins.bool = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["id", b"id", "is_deleted", b"is_deleted"]) -> None: ...
+
+global___DeleteUserByAdminResponse = DeleteUserByAdminResponse
+
+@typing.final
+class GetAllUsersByAdminRequest(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    ACCESS_TOKEN_FIELD_NUMBER: builtins.int
+    access_token: builtins.str
+    def __init__(
+        self,
+        *,
+        access_token: builtins.str = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["access_token", b"access_token"]) -> None: ...
+
+global___GetAllUsersByAdminRequest = GetAllUsersByAdminRequest
+
+@typing.final
+class GetAllUsersByAdminResponse(google.protobuf.message.Message):
+    DESCRIPTOR: google.protobuf.descriptor.Descriptor
+
+    USERS_FIELD_NUMBER: builtins.int
+    @property
+    def users(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___User]: ...
+    def __init__(
+        self,
+        *,
+        users: collections.abc.Iterable[global___User] | None = ...,
+    ) -> None: ...
+    def ClearField(self, field_name: typing.Literal["users", b"users"]) -> None: ...
+
+global___GetAllUsersByAdminResponse = GetAllUsersByAdminResponse
