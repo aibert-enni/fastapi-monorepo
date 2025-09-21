@@ -12,7 +12,7 @@ from app.exceptions.custom_exceptions import ValidationError
 from app.schemas.user import UserCreateS, UserUpdateS
 from app.services.brokers.rabbit.main import rabbit_service
 from app.services.health_service import HealthService
-from rpc.dependencies.services import get_user_service
+from app.core.dependencies import get_user_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
 logging.basicConfig(
