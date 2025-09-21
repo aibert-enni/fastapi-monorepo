@@ -3,14 +3,12 @@ from uuid import UUID
 
 import grpc
 from api.dependencies.current_user import GetCurrentUserDep
+from api.schemas.media import FileUploadResponseS, GetFileUrlResponse
 from fastapi import APIRouter, UploadFile, status
 from proto.media import media_pb2, media_pb2_grpc
 
 from app.core.settings import settings
 from app.exceptions.custom_exceptions import APIError
-from api.schemas.media import FileUploadResponseS, GetFileUrlResponse
-from app.schemas.health import HealthCheckS
-from app.services.health_service import HealthService
 
 router = APIRouter(prefix="/files", tags=["media"])
 

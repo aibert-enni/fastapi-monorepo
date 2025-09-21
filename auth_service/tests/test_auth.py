@@ -2,8 +2,8 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.exceptions.custom_exceptions import (
-    IntegrityError,
     CredentialError,
+    IntegrityError,
 )
 from app.schemas.auth import AuthCreateS, AuthLoginS
 from app.services.auth_service import AuthService

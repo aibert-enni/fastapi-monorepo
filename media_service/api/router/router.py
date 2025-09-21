@@ -1,4 +1,3 @@
-import uuid
 from uuid import UUID
 
 from api.dependencies.services import MediaServiceDep

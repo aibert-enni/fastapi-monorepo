@@ -22,7 +22,7 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2 # noqa: F401
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0bmedia.proto\x12\x05media\x1a\x1bgoogle/protobuf/empty.proto\"K\n\x13UploadAvatarRequest\x12\x10\n\x08owner_id\x18\x01 \x01(\t\x12\x0c\n\x04\x66ile\x18\x02 \x01(\x0c\x12\x14\n\x0c\x63ontent_type\x18\x03 \x01(\t\"/\n\x14UploadAvatarResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0b\n\x03url\x18\x02 \x01(\t\"\x1f\n\x11GetFileUrlRequest\x12\n\n\x02id\x18\x01 \x01(\t\"!\n\x12GetFileUrlResponse\x12\x0b\n\x03url\x18\x01 \x01(\t\"K\n\x11\x44\x65leteFileRequest\x12\x0f\n\x07\x66ile_id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x14\n\x0cis_superuser\x18\x03 \x01(\x08\"$\n\x12\x44\x65leteFileResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\"\x8c\x01\n\x13HealthCheckResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x36\n\x06\x63hecks\x18\x02 \x03(\x0b\x32&.media.HealthCheckResponse.ChecksEntry\x1a-\n\x0b\x43hecksEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\x32\x99\x02\n\x05Media\x12G\n\x0cUploadAvatar\x12\x1a.media.UploadAvatarRequest\x1a\x1b.media.UploadAvatarResponse\x12\x41\n\nGetFileUrl\x12\x18.media.GetFileUrlRequest\x1a\x19.media.GetFileUrlResponse\x12\x41\n\nDeleteFile\x12\x18.media.DeleteFileRequest\x1a\x19.media.DeleteFileResponse\x12\x41\n\x0bHealthCheck\x12\x16.google.protobuf.Empty\x1a\x1a.media.HealthCheckResponseb\x06proto3')

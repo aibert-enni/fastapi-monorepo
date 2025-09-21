@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
 from .auth import router as auth_router
+from .health import router as health_router
 from .media import router as media_router
 from .user import router as user_router
-from .health import router as health_router
 
 router = APIRouter(prefix="/v1")
 

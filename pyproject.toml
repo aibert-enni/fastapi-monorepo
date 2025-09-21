@@ -46,7 +46,7 @@ httpx = "^0.28.1"
 
 [tool.ruff]
 line-length = 88
-src = ["app", "user_service", "tests"]
+exclude = ["__pycache__", "proto", "alembic", "minio-data", ".pytest_cache", ".ruff_cache", "__init__.py"]
 
 [tool.ruff.lint]
 extend-select = ["I"]

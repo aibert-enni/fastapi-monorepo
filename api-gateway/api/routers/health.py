@@ -1,7 +1,7 @@
+from api.dependencies.current_user import get_current_superuser
 from fastapi import APIRouter, Depends
 
-from api.dependencies.current_user import get_current_superuser
-from app.schemas.health import HealthCheckServiceS, HealthCheckS
+from app.schemas.health import HealthCheckS, HealthCheckServiceS
 from app.services.health_service import HealthService
 
 router = APIRouter(prefix="/health", tags=["health"])
@@ -27,5 +27,5 @@ async def check_media() -> HealthCheckServiceS:
 
 @router.get("/full", dependencies=[Depends(get_current_superuser)])
 async def check_full_health() -> HealthCheckS:
-    response = await HealthService.check_services()
-    return HealthCheckS(status="healthy", services=response)
+    response = await HealthService.full_check()
+    return response

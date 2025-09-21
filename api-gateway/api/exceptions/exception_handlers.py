@@ -2,8 +2,8 @@ import json
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
-from grpc.aio import AioRpcError
 from grpc import StatusCode
+from grpc.aio import AioRpcError
 
 from app.exceptions.custom_exceptions import APIError
 

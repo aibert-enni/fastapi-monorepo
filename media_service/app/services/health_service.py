@@ -1,8 +1,8 @@
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.services.s3_service import S3Client
 from app.schemas.health_check import HealthCheckS
+from app.services.s3_service import S3Client
 
 
 class HealthService:

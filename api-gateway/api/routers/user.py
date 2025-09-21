@@ -1,11 +1,11 @@
-from fastapi import APIRouter
 import grpc
+from api.dependencies.current_user import GetCurrentUserDep
+from api.schemas.user import UserUpdateRequestS
+from fastapi import APIRouter
+from proto.user import user_pb2, user_pb2_grpc
 
 from app.core.settings import settings
-from api.dependencies.current_user import GetCurrentUserDep
-from proto.user import user_pb2, user_pb2_grpc
 from app.schemas.user import UserS
-from api.schemas.user import UserUpdateRequestS
 
 router = APIRouter(prefix="/users", tags=["users"])
 

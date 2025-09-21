@@ -3,16 +3,16 @@ import logging
 from concurrent import futures
 
 import grpc
-from app.services.health_service import HealthService
 from proto import auth_pb2, auth_pb2_grpc
 from rpc.dependencies.services import get_auth_service
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
-from app.core.settings import settings
 from app.core.db import session_maker
+from app.core.settings import settings
 from app.exceptions.custom_exceptions import CredentialError
 from app.schemas.auth import AuthCreateS, AuthLoginS
 from app.services.brokers.rabbit.main import rabbit_broker_service
+from app.services.health_service import HealthService
 
 logging.basicConfig(
     level=logging.INFO,

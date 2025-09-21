@@ -1,12 +1,7 @@
 import logging
 
 import grpc
-
 from api.dependencies.current_user import GetCurrentUserDep
-from fastapi import APIRouter, Request, Response, status
-from proto.auth import auth_pb2, auth_pb2_grpc
-from app.core.settings import settings
-from app.exceptions.custom_exceptions import CredentialError
 from api.schemas.auth import (
     AuthLoginRequestS,
     AuthLoginResponseS,
@@ -15,6 +10,11 @@ from api.schemas.auth import (
     AuthRegisterResponseS,
     RefreshAccessTokenResponse,
 )
+from fastapi import APIRouter, Request, Response, status
+from proto.auth import auth_pb2, auth_pb2_grpc
+
+from app.core.settings import settings
+from app.exceptions.custom_exceptions import CredentialError
 from app.utils.jwt import decode_jwt
 
 logger = logging.getLogger(__name__)

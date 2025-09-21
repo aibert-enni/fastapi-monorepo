@@ -5,12 +5,12 @@ from concurrent import futures
 from uuid import UUID
 
 import grpc
-from app.services.health_service import HealthService
 from proto import media_pb2, media_pb2_grpc
 
-from app.core.settings import settings
 from app.core.db import session_maker
+from app.core.settings import settings
 from app.exceptions.custom_exceptions import ValidationError
+from app.services.health_service import HealthService
 from app.services.s3_service import s3_client
 from rpc.dependencies.services import get_media_service
 from rpc.interceptors.exception_handler import ErrorInterceptor

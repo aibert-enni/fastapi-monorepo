@@ -123,7 +123,7 @@ class S3Client:
             try:
                 await self._call(client.head_bucket, Bucket=self.bucket_name)
                 return True
-            except:
+            except Exception:
                 return False
 
 s3_client = S3Client(

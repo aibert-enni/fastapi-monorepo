@@ -3,4 +3,4 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
-from .fixtures import  setup, db_session, engine, media_service # noqa: F401
+from .fixtures import db_session, engine, media_service, setup  # noqa: F401
