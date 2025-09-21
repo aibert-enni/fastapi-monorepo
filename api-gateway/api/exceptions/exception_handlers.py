@@ -1,8 +1,9 @@
 import json
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from grpc.aio import AioRpcError
+from grpc import StatusCode
 
 from app.exceptions.custom_exceptions import APIError
 
@@ -20,6 +21,14 @@ def setup_exception_handlers(app: FastAPI) -> None:
     
     @app.exception_handler(AioRpcError)
     async def grpc_exception_handler(request: Request, exc: AioRpcError) -> JSONResponse:
+        if exc.code() == StatusCode.UNAVAILABLE:
+            return JSONResponse(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                content={
+                    "message": "Service unavailable, try again later",
+                }
+            )
+
         details = exc.details()
         try:
             json_response = json.loads(details) if details else {}

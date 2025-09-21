@@ -6,8 +6,6 @@ from api.dependencies.current_user import GetCurrentUserDep
 from proto.user import user_pb2, user_pb2_grpc
 from app.schemas.user import UserS
 from api.schemas.user import UserUpdateRequestS
-from app.schemas.health import HealthCheckS
-from app.services.health_service import HealthService
 
 router = APIRouter(prefix="/users", tags=["users"])
 
