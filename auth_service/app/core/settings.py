@@ -20,6 +20,7 @@ class DBSettings(BaseModel):
 
 class RabbitSettings(BaseModel):
     URL: str
+    ENABLE: bool = True
 
 
 class JwtSettings(BaseModel):

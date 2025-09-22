@@ -82,7 +82,7 @@ async def serve():
     logger.info(f"Server address: localhost:{settings.grpc.port}")
     await server.start()
     await server.wait_for_termination()
-    await rabbit_broker_service.stope()
+    await rabbit_broker_service.stop()
 
 if __name__ == "__main__":
     asyncio.run(serve())

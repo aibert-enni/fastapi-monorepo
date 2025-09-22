@@ -11,7 +11,7 @@ from app.services.brokers.rabbit.main import rabbit_broker_service
 async def lifespan(app: FastAPI):
     await rabbit_broker_service.start()
     yield
-    await rabbit_broker_service.stope()
+    await rabbit_broker_service.stop()
 
 
 app = FastAPI(

@@ -8,7 +8,6 @@ services:
     ports:
       - "${GRPC__PORT}:${GRPC__PORT}"
     depends_on: [postgres]
-    command: sh -c "python -m alembic upgrade head && python -m rpc.main"
     networks:
       - auth_network
       - internal_network
