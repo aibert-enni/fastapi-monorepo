@@ -40,6 +40,15 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 - **Pytest** – testing framework
 - **Minio** – aws object storage for media files
 
+## Demo / Test Server
+
+A ready-to-use test server is available for quick evaluation of the project.(Only works api gateway and auth service because I'm not trump to maintain server for $$$)  
+You can access the API Gateway documentation at:
+
+https://enni-aibert.duckdns.org/docs
+
+> ⚠️ Note: This server is for demonstration purposes only and should not be used in production. 
+
 ### API
 <img width="1918" height="991" alt="Screenshot 2025-09-20 231516" src="https://github.com/user-attachments/assets/56d23a64-2a2b-4380-b3b5-37c1920d515b" />
 
