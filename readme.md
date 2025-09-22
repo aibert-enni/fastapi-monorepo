@@ -47,6 +47,10 @@ You can access the API Gateway documentation at:
 
 https://enni-aibert.duckdns.org/docs
 
+Admin account:
+- username: admin
+- password: admin1234
+
 > ⚠️ Note: This server is for demonstration purposes only and should not be used in production. 
 
 ### API
@@ -139,4 +143,5 @@ python -m pytest
 API Gateway doc: http://localhost:8000/docs
 
 RabbitMQ management UI: http://localhost:15672
+
 Minio management UI: http://localhost:9001/login 
