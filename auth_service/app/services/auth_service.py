@@ -9,7 +9,7 @@ from app.exceptions.custom_exceptions import (
     IntegrityError,
     NotFoundError,
 )
-from app.repository import AuthRepository
+from app.repositories.auth_repository import AuthRepository
 from app.schemas.auth import (
     AuthCreateS,
     AuthLoginS,
@@ -18,7 +18,7 @@ from app.schemas.auth import (
     AuthUpdateS,
 )
 from app.schemas.jwt_token import JWT_TokenS
-from app.services.brokers.base import BaseBrokerService
+from app.services.brokers.base import BrokerService
 from app.utils.jwt import (
     TOKEN_TYPE_FIELD,
     TokenType,
@@ -31,7 +31,7 @@ from app.utils.password import hash_password, verify_password
 
 
 class AuthService:
-    def __init__(self, auth_repository: AuthRepository, broker: BaseBrokerService):
+    def __init__(self, auth_repository: AuthRepository, broker: BrokerService):
         self.auth_repository = auth_repository
         self.broker = broker
 

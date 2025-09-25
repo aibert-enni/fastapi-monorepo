@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.repository import AuthRepository
+from auth_service.app.repositories.auth_repository import AuthRepository
 from app.services.auth_service import AuthService
 
 

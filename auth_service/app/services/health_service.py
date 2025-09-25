@@ -4,12 +4,12 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.health_check import HealthCheckS
-from app.services.brokers.base import BaseBrokerService
+from app.services.brokers.base import BrokerService
 
 logger = logging.getLogger(__name__)
 
 class HealthService:
-    def __init__(self, db_session: AsyncSession, broker_service: BaseBrokerService) -> None:
+    def __init__(self, db_session: AsyncSession, broker_service:BrokerService) -> None:
         self.db_session = db_session
         self.broker_service = broker_service
 

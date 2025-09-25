@@ -12,7 +12,7 @@ from app.core.settings import settings
 from app.core.setup import setup
 from app.exceptions.custom_exceptions import CredentialError
 from app.schemas.auth import AuthCreateS, AuthLoginS, AuthUpdateS
-from app.services.brokers.rabbit.main import rabbit_broker_service
+from app.services.brokers.broker_manager import get_broker_manager
 from app.services.health_service import HealthService
 
 logging.basicConfig(
@@ -48,7 +48,8 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
     
     async def HealthCheck(self, request, context):
         async with session_maker() as db:
-            health_service = HealthService(db_session=db, broker_service=rabbit_broker_service)
+            broker_manager = get_broker_manager()
+            health_service = HealthService(db_session=db, broker_service=broker_manager.get_broker())
             health = await health_service.health_check()
         return auth_pb2.HealthCheckResponse(status=health.status, checks=health.checks)
     
@@ -74,7 +75,10 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
         return auth_pb2.GetAllUsersByAdminResponse(users=users)
 
 async def serve():
-    await rabbit_broker_service.start()
+    if settings.rabbit.ENABLE:
+        await get_broker_manager().initalize("rabbit")
+    else:
+        await get_broker_manager().initalize("dummy")
     await setup()
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[ErrorInterceptor()])
     auth_pb2_grpc.add_AuthServicer_to_server(servicer=AuthServicer(), server=server)
@@ -82,7 +86,7 @@ async def serve():
     logger.info(f"Server address: localhost:{settings.grpc.port}")
     await server.start()
     await server.wait_for_termination()
-    await rabbit_broker_service.stop()
+    await get_broker_manager().shutdown()
 
 if __name__ == "__main__":
     asyncio.run(serve())

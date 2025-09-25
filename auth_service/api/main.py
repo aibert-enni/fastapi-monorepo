@@ -1,17 +1,21 @@
 from contextlib import asynccontextmanager
 
-from api.exceptions.exception_handlers import setup_exception_handlers
-from api.router.v1 import router as v1_router
 from fastapi import FastAPI
 
-from app.services.brokers.rabbit.main import rabbit_broker_service
+from api.exceptions.exception_handlers import setup_exception_handlers
+from api.router.v1 import router as v1_router
+from app.core.settings import settings
+from app.services.brokers.broker_manager import get_broker_manager
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await rabbit_broker_service.start()
+    if settings.rabbit.ENABLE:
+        await get_broker_manager().initalize("rabbit")
+    else:
+        await get_broker_manager().initalize("dummy")
     yield
-    await rabbit_broker_service.stop()
+    await get_broker_manager().shutdown()
 
 
 app = FastAPI(

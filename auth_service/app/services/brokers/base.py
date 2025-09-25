@@ -1,7 +1,7 @@
 from typing import Protocol
 
 
-class BaseBrokerService(Protocol):
+class BrokerService(Protocol):
     async def start(self) -> None: ...
 
     async def publish(self, data: dict, routing_key: str) -> None: ...
