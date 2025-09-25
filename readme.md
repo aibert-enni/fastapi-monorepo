@@ -13,6 +13,7 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 ### User Service
 - Manages user data (registration, profile, etc.).
 - Publishes events (e.g., `user.created`) when a new user is created.
+- There is outbox pattern for broker fallback messages, message sending implemented via celery schedule tasks for every 5 minutes
 
 ### Auth Service
 - Handles authentication and authorization logic.
@@ -36,6 +37,7 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 - **gRPC** – inter-service communication
 - **RabbitMQ** – message broker for asynchronous communication
 - **PostgreSQL** – persistence layer
+- **Celery** - task queue with scheduling
 - **Docker Compose** – container orchestration
 - **Pytest** – testing framework
 - **Minio** – aws object storage for media files
