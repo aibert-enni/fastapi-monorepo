@@ -1,7 +1,11 @@
+from enum import Enum
 from typing import Literal, Optional
 
 from app.services.brokers.base import BrokerService
 
+class BrokersType(Enum):
+    DUMMY = "dummy"
+    RABBIT = "rabbit"
 
 class BrokerManager:
     _instanse: Optional["BrokerManager"] = None
@@ -12,9 +16,9 @@ class BrokerManager:
             cls._instanse = super().__new__(cls)
         return cls._instanse
     
-    async def initalize(self, broker_type: Literal["dummy", "rabbit"]):
+    async def initalize(self, broker_type: BrokersType):
         if self._broker is None:
-            if broker_type == "rabbit":
+            if broker_type == BrokersType.RABBIT:
                 from app.services.brokers.rabbit.rabbit_service import RabbitBrokerService
                 from app.services.brokers.rabbit.main import broker
                 self._broker = RabbitBrokerService(broker=broker)

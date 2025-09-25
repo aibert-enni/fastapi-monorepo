@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class OutboxMessagesS(BaseModel):
-    id: Optional[int] = None
+    id: int
     data: str
     routing_key: str
     broker_name: str
