@@ -64,9 +64,7 @@ class AuthService:
         )
         try:
             user = await self.auth_repository.save(user_schema)
-            await self.auth_repository.session.commit()
         except SAIntegrityError as e:
-            await self.auth_repository.session.rollback()
             self._handle_integrity_error(e)
         await self.broker.publish_user_created(user.model_dump(mode="json"))
         return user
@@ -77,9 +75,7 @@ class AuthService:
         update_schema = AuthUpdateRepositoryS(**schema.model_dump(exclude={"password"}), id=user_id, hashed_password=hashed_password)
         try:
             user = await self.auth_repository.update(update_schema)
-            await self.auth_repository.session.commit()
         except SAIntegrityError as e:
-            await self.auth_repository.session.rollback()
             self._handle_integrity_error(e)
         if user is None:
             raise NotFoundError("User not found")

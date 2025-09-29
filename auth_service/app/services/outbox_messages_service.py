@@ -10,13 +10,13 @@ from app.services.brokers.broker_manager import BrokersType
 
 class OutboxMessagesService:
     BATCH_SIZE = 10
+
     def __init__(self, outbox_messages_repository: OutboxMessagesRepository, broker_service: BrokerService) -> None:
         self.outbox_messages_repository = outbox_messages_repository
         self.broker_service = broker_service
 
     async def create(self, create_schema: OutboxMessagesCreateS) -> OutboxMessagesS:
         outbox_message = await self.outbox_messages_repository.save(create_schema)
-        await self.outbox_messages_repository.session.commit()
         return outbox_message
     
     async def send_fallback_message(self, data, routing_key, broker_name) -> bool:
