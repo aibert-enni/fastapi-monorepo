@@ -41,6 +41,8 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 - **Docker Compose** – container orchestration
 - **Pytest** – testing framework
 - **Minio** – aws object storage for media files
+- **Promotheus** - logs metrics
+- **Grafana** - visuailize data from datasources, for example from promotheus
 
 ## Demo / Test Server
 
@@ -147,3 +149,7 @@ API Gateway doc: http://localhost:8000/docs
 RabbitMQ management UI: http://localhost:15672
 
 Minio management UI: http://localhost:9001/login 
+
+Promotheus management UI: http://localhost:9090/
+
+Grafana management UI: http://localhost:3000/
