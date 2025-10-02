@@ -9,7 +9,41 @@ services:
       - "8000:8000"
     networks:
       - internal_network
+      - api-gateway_network
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - api-gateway_network
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on: [prometheus]
+    networks:
+      - api-gateway_network
+
+  
+volumes:
+  prometheus_data:
+  grafana_data:
 
 networks:
+  api-gateway_network:
+    driver: bridge
   internal_network:
     external: true
