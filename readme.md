@@ -2,6 +2,7 @@
 
 This project demonstrates a **microservices-based architecture** for handling user authorization.  
 The services communicate with each other via **RabbitMQ**, while the **API Gateway** interacts with the services using **gRPC**.
+There is monitoring system of metrics and logs via **Promotheus**, **Loki** and **Grafana**
 
 ## Services
 
@@ -42,6 +43,8 @@ The services communicate with each other via **RabbitMQ**, while the **API Gatew
 - **Pytest** – testing framework
 - **Minio** – aws object storage for media files
 - **Promotheus** - logs metrics
+- **Loki** - store and collects logs
+- **Promtail** - agent that read logs and send to loki
 - **Grafana** - visuailize data from datasources, for example from promotheus
 
 ## Demo / Test Server
@@ -151,5 +154,7 @@ RabbitMQ management UI: http://localhost:15672
 Minio management UI: http://localhost:9001/login 
 
 Promotheus management UI: http://localhost:9090/
+
+Promtail management UI: http://localhost:9080/
 
 Grafana management UI: http://localhost:3000/
