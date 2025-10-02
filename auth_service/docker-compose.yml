@@ -6,8 +6,11 @@ services:
     env_file:
       - .env.docker
     ports:
+      - "8888:8888"
       - "${GRPC__PORT}:${GRPC__PORT}"
     depends_on: [postgres]
+    volumes:
+      - auth_logs:/app/logs
     networks:
       - auth_network
       - internal_network
@@ -24,6 +27,30 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - auth_network
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+    networks:
+      - auth_network
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    ports:
+      - "9080:9080"
+    volumes:
+      - auth_logs:/host_logs
+      - ./promtail-config.yaml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    privileged: true
+    depends_on: [loki, auth_service]
+    networks:
+      - auth_network
   
   prometheus:
     image: prom/prometheus
@@ -32,6 +59,10 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
+    depends_on:
+      - auth_service
+    networks:
+      - auth_network
     
   grafana:
     image: grafana/grafana
@@ -43,12 +74,14 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-    depends_on:
-      - prometheus
+    depends_on: [prometheus, loki, promtail]
+    networks:
+      - auth_network
 
 volumes:
   postgres_data:
   prometheus_data:
+  auth_logs: 
   grafana_data:
 
 networks:

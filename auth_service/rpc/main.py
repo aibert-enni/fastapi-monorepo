@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from concurrent import futures
+import os
 import time
 
 import grpc
@@ -19,7 +20,10 @@ from app.schemas.auth import AuthCreateS, AuthLoginS, AuthUpdateS
 from app.services.brokers.broker_manager import BrokersType, get_broker_manager
 from app.services.health_service import HealthService
 
+os.makedirs("logs", exist_ok=True)
+
 logging.basicConfig(
+    filename="logs/auth_service.log",
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
