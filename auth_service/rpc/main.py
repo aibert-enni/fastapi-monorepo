@@ -1,8 +1,12 @@
 import asyncio
 import logging
 from concurrent import futures
+import time
 
 import grpc
+from prometheus_client import start_http_server
+
+from rpc.interceptors.promotheus_handler import PromotheusInterceptor
 from proto import auth_pb2, auth_pb2_grpc
 from rpc.interceptors.exception_handler import ErrorInterceptor
 
@@ -12,7 +16,7 @@ from app.core.settings import settings
 from app.core.setup import setup
 from app.exceptions.custom_exceptions import CredentialError
 from app.schemas.auth import AuthCreateS, AuthLoginS, AuthUpdateS
-from app.services.brokers.broker_manager import get_broker_manager
+from app.services.brokers.broker_manager import BrokersType, get_broker_manager
 from app.services.health_service import HealthService
 
 logging.basicConfig(
@@ -76,15 +80,18 @@ class AuthServicer(auth_pb2_grpc.AuthServicer):
 
 async def serve():
     if settings.rabbit.ENABLE:
-        await get_broker_manager().initalize("rabbit")
+        await get_broker_manager().initalize(BrokersType.RABBIT)
     else:
-        await get_broker_manager().initalize("dummy")
+        await get_broker_manager().initalize(BrokersType.DUMMY)
     await setup()
-    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[ErrorInterceptor()])
+    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[PromotheusInterceptor(), ErrorInterceptor()])
     auth_pb2_grpc.add_AuthServicer_to_server(servicer=AuthServicer(), server=server)
     server.add_insecure_port(f"[::]:{settings.grpc.port}")
     logger.info(f"Server address: localhost:{settings.grpc.port}")
     await server.start()
+
+    start_http_server(port=8888)
+
     await server.wait_for_termination()
     await get_broker_manager().shutdown()
 

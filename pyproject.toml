@@ -25,6 +25,7 @@ dependencies = [
     "grpcio (>=1.74.0,<2.0.0)",
     "grpcio-tools (>=1.74.0,<2.0.0)",
     "celery[rabbitmq] (>=5.5.3,<6.0.0)",
+    "prometheus-client (>=0.23.1,<0.24.0)",
 ]
 
 [build-system]
