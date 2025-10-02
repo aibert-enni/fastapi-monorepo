@@ -84,7 +84,7 @@ async def serve():
     else:
         await get_broker_manager().initalize(BrokersType.DUMMY)
     await setup()
-    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[PromotheusInterceptor(), ErrorInterceptor()])
+    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=4), interceptors=[ErrorInterceptor(), PromotheusInterceptor()])
     auth_pb2_grpc.add_AuthServicer_to_server(servicer=AuthServicer(), server=server)
     server.add_insecure_port(f"[::]:{settings.grpc.port}")
     logger.info(f"Server address: localhost:{settings.grpc.port}")

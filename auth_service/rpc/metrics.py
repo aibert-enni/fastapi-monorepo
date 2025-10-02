@@ -4,7 +4,7 @@ from prometheus_client import Counter, Histogram
 REQUEST_COUNTER = Counter(
     "grpc_requests_total",
     "Total number of gRPC requests",
-    ["method"]
+    ["method", "status"]
 )
 
 REQUEST_LATENCY = Histogram(

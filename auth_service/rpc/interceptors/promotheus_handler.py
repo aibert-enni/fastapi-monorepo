@@ -7,13 +7,7 @@ from rpc.metrics import REQUEST_COUNTER, REQUEST_LATENCY
 
 class PromotheusInterceptor(grpc.aio.ServerInterceptor):
     async def intercept_service(self, continuation: Callable[[grpc.HandlerCallDetails], Awaitable[grpc.RpcMethodHandler]], handler_call_details: grpc.HandlerCallDetails) -> grpc.RpcMethodHandler:
-        # Increase the global request counter
-        REQUEST_COUNTER.labels("total").inc()
-
         method_name = handler_call_details.method
-        
-        # Increase the request counter
-        REQUEST_COUNTER.labels(method_name).inc()
         
         handler = await continuation(handler_call_details)
 
@@ -23,6 +17,13 @@ class PromotheusInterceptor(grpc.aio.ServerInterceptor):
                 start = time.perf_counter()
                 try:
                     response = await original_handler(request, context)
+                    
+                    REQUEST_COUNTER.labels(method=method_name, status="success").inc()
+                    REQUEST_COUNTER.labels(method="total", status="success").inc()
+                except Exception:
+                    REQUEST_COUNTER.labels(method=method_name, status="error").inc()
+                    REQUEST_COUNTER.labels(method="total", status="error").inc()
+                    raise
                 finally:
                     duration = time.perf_counter() - start
                     REQUEST_LATENCY.labels(method_name).observe(duration)
