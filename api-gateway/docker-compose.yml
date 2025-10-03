@@ -7,6 +7,8 @@ services:
       - .env.docker
     ports:
       - "8000:8000"
+    volumes:
+      - app_logs:/app/logs
     networks:
       - internal_network
       - api-gateway_network
@@ -22,6 +24,28 @@ services:
       - api-gateway_network
     depends_on:
       - app
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+    networks:
+      - api-gateway_network
+
+  promtail:
+    image: grafana/promtail:latest
+    ports:
+      - "9080:9080"
+    volumes:
+      - app_logs:/host_logs
+      - ./promtail-config.yaml:/etc/promtail/config.yml
+    command: -config.file=/etc/promtail/config.yml
+    privileged: true
+    depends_on: [loki, app]
+    networks:
+      - api-gateway_network
 
   grafana:
     image: grafana/grafana
@@ -39,6 +63,7 @@ services:
 
   
 volumes:
+  app_logs:
   prometheus_data:
   grafana_data:
 
