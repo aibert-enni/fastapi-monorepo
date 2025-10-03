@@ -63,6 +63,8 @@ Admin account:
 ### API
 <img width="1918" height="991" alt="Screenshot 2025-09-20 231516" src="https://github.com/user-attachments/assets/56d23a64-2a2b-4380-b3b5-37c1920d515b" />
 
+### Grafana
+<img width="1917" height="990" alt="Screenshot 2025-10-03 133431" src="https://github.com/user-attachments/assets/52721b06-1b42-4a83-9a49-8153b6577dd4" />
 
 ## Running the Project
 
